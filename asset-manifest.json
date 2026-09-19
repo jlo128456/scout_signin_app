@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/scout_signin_app/static/css/main.202ee416.css",
-    "main.js": "/scout_signin_app/static/js/main.dfeb3aff.js",
+    "main.js": "/scout_signin_app/static/js/main.b3105fae.js",
     "index.html": "/scout_signin_app/index.html",
     "main.202ee416.css.map": "/scout_signin_app/static/css/main.202ee416.css.map",
-    "main.dfeb3aff.js.map": "/scout_signin_app/static/js/main.dfeb3aff.js.map"
+    "main.b3105fae.js.map": "/scout_signin_app/static/js/main.b3105fae.js.map"
   },
   "entrypoints": [
     "static/css/main.202ee416.css",
-    "static/js/main.dfeb3aff.js"
+    "static/js/main.b3105fae.js"
   ]
 }
