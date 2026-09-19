@@ -1,170 +1,187 @@
-import React from 'react';
-import { X, Book } from 'lucide-react';
+import React, { useState } from 'react';
+import { X } from 'lucide-react';
 
-const InstructionsModal = ({ onClose }) => {
+const InstructionsModal = ({ isOpen, onClose }) => {
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  if (!isOpen) return null;
+
   return React.createElement(
     'div',
-    { className: 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4' },
+    { 
+      // SOLID MODAL - Always on top, fixed position
+      className: 'fixed top-0 right-0 w-full md:w-1/2 h-screen md:h-[95vh] z-50 md:rounded-l-xl overflow-hidden shadow-2xl flex flex-col'
+    },
+    
+    // Header - SOLID, doesn't move
     React.createElement(
       'div',
-      { className: 'bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col' },
+      { className: 'bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex-shrink-0 flex justify-between items-center' },
+      React.createElement('h2', { className: 'text-2xl font-bold' }, '📋 Instructions'),
+      React.createElement(
+        'div',
+        { className: 'flex gap-2' },
+        React.createElement(
+          'button',
+          {
+            onClick: () => setIsMinimized(!isMinimized),
+            className: 'bg-blue-500 hover:bg-blue-400 text-white px-3 py-1 rounded text-sm font-bold'
+          },
+          isMinimized ? '↓ Expand' : '↑ Minimize'
+        ),
+        React.createElement(
+          'button',
+          {
+            onClick: onClose,
+            className: 'bg-red-500 hover:bg-red-600 text-white p-2 rounded'
+          },
+          React.createElement(X, { className: 'w-5 h-5' })
+        )
+      )
+    ),
+
+    // Content - SCROLLABLE
+    !isMinimized && React.createElement(
+      'div',
+      { className: 'flex-1 overflow-y-auto bg-white p-6 space-y-6' },
       
-      // Header (Fixed at top)
+      // Welcome Section
       React.createElement(
         'div',
-        { className: 'bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex items-center justify-between flex-shrink-0' },
-        React.createElement(
-          'div',
-          { className: 'flex items-center gap-3' },
-          React.createElement(Book, { className: 'w-6 h-6' }),
-          React.createElement('h2', { className: 'text-2xl font-bold' }, 'How to Use This Demo')
-        ),
-        React.createElement(
-          'button',
-          { onClick: onClose, className: 'hover:bg-blue-500 p-2 rounded-full transition' },
-          React.createElement(X, { className: 'w-6 h-6' })
+        null,
+        React.createElement('h3', { className: 'text-xl font-bold text-blue-600 mb-3' }, '👋 Welcome to Scout Sign-In Demo'),
+        React.createElement('p', { className: 'text-gray-700 leading-relaxed' }, 'This is a fully functional demo of the Scout Sign-In system. You can explore all features with demo data or add your own information.')
+      ),
+
+      // How to Use
+      React.createElement(
+        'div',
+        null,
+        React.createElement('h3', { className: 'text-xl font-bold text-blue-600 mb-3' }, '🚀 How to Use'),
+        React.createElement('ol', { className: 'text-gray-700 space-y-2 list-decimal list-inside' },
+          React.createElement('li', null, 'Click on a scout from the Master List OR'),
+          React.createElement('li', null, 'Enter a parent\'s phone number to find their child'),
+          React.createElement('li', null, 'Click "Sign In" to record attendance'),
+          React.createElement('li', null, 'View the Log tab to see all sign-in records'),
+          React.createElement('li', null, 'Use Setup tab to add leaders, manage settings, and post announcements')
         )
       ),
 
-      // Content (Scrollable)
+      // Phone Numbers Section
       React.createElement(
         'div',
-        { className: 'flex-1 overflow-y-auto p-6 space-y-6' },
-
+        { className: 'bg-green-50 border-2 border-green-300 p-4 rounded-lg' },
+        React.createElement('h3', { className: 'text-lg font-bold text-green-600 mb-3' }, '📱 Parent Phone Numbers to Use'),
+        React.createElement('p', { className: 'text-gray-700 mb-3 text-sm' }, 'Use ANY of these phone numbers to find demo scouts:'),
         React.createElement(
           'div',
-          null,
-          React.createElement('h3', { className: 'text-lg font-bold text-blue-600 mb-2 flex items-center gap-2' }, '📌 IMPORTANT NOTES'),
-          React.createElement('p', { className: 'text-red-600 font-semibold' }, '⚠️ This is a DEMO with sample data. All data resets when you close or refresh the app. Nothing is saved!'),
-          React.createElement('p', { className: 'text-gray-700 mt-2' }, 'This demo allows you to explore all features without affecting real scout records.')
+          { className: 'space-y-2' },
+          React.createElement('p', { className: 'text-sm text-gray-700' }, '🟢 <strong>Joeys:</strong> 0412345601, 0412345602, 0412345603, 0412345604, 0412345605'),
+          React.createElement('p', { className: 'text-sm text-gray-700' }, '🔵 <strong>Cubs:</strong> 0412345606, 0412345607, 0412345608, 0412345609, 0412345610'),
+          React.createElement('p', { className: 'text-sm text-gray-700' }, '🟡 <strong>Scouts:</strong> 0412345611, 0412345612, 0412345613, 0412345614, 0412345615'),
+          React.createElement('p', { className: 'text-sm text-gray-700' }, '🔴 <strong>Venturers:</strong> 0412345616, 0412345617, 0412345618, 0412345619, 0412345620')
         ),
+        React.createElement('p', { className: 'text-xs text-gray-500 mt-3' }, '✅ Just type the last 9 digits (e.g., "412345601")')
+      ),
 
-        React.createElement(
-          'div',
-          null,
-          React.createElement('h3', { className: 'text-lg font-bold text-green-600 mb-2 flex items-center gap-2' }, '📱 Sign-In Tab'),
-          React.createElement('ol', { className: 'list-decimal list-inside space-y-2 text-gray-700' },
-            React.createElement('li', null, React.createElement('span', { className: 'font-semibold' }, 'Find by Phone: '), 'Enter any phone number to search for a scout'),
-            React.createElement('li', null, React.createElement('span', { className: 'font-semibold' }, 'Quick Add: '), 'Add a new scout on the fly if not in list'),
-            React.createElement('li', null, React.createElement('span', { className: 'font-semibold' }, 'Sign In: '), 'Click "Sign In" button when child arrives'),
-            React.createElement('li', null, React.createElement('span', { className: 'font-semibold' }, 'Sign Out: '), 'Click "Sign Out" and select their guardian picking them up'),
-            React.createElement('li', null, React.createElement('span', { className: 'font-semibold' }, 'View Leaders: '), 'All leaders on duty are shown at the top')
-          )
-        ),
+      // Admin Section
+      React.createElement(
+        'div',
+        { className: 'bg-purple-50 border-2 border-purple-300 p-4 rounded-lg' },
+        React.createElement('h3', { className: 'text-lg font-bold text-purple-600 mb-2' }, '🔐 Admin Access'),
+        React.createElement('p', { className: 'text-gray-700 text-sm mb-2' }, 'To access the Admin section:'),
+        React.createElement('p', { className: 'text-gray-700 text-sm' }, '• PIN: <strong>1234</strong>'),
+        React.createElement('p', { className: 'text-gray-700 text-sm' }, '• Use in any tab to unlock admin features')
+      ),
 
-        React.createElement(
-          'div',
-          null,
-          React.createElement('h3', { className: 'text-lg font-bold text-purple-600 mb-2 flex items-center gap-2' }, '🔢 Master List Tab'),
-          React.createElement('p', { className: 'text-gray-700 mb-2' }, 'Browse all scouts organized by section:'),
-          React.createElement('ul', { className: 'list-disc list-inside space-y-1 text-gray-700' },
-            React.createElement('li', null, React.createElement('span', { className: 'font-semibold' }, 'Number 1-5: '), 'Joeys'),
-            React.createElement('li', null, React.createElement('span', { className: 'font-semibold' }, 'Number 6-10: '), 'Cubs'),
-            React.createElement('li', null, React.createElement('span', { className: 'font-semibold' }, 'Number 11-15: '), 'Scouts'),
-            React.createElement('li', null, React.createElement('span', { className: 'font-semibold' }, 'Number 16-20: '), 'Venturers')
+      // Features
+      React.createElement(
+        'div',
+        null,
+        React.createElement('h3', { className: 'text-lg font-bold text-blue-600 mb-3' }, '✨ Features'),
+        React.createElement('ul', { className: 'text-gray-700 space-y-2' },
+          React.createElement('li', null, '✅ Master List - View all scouts'),
+          React.createElement('li', null, '✅ Sign-In Screen - Mark attendance by phone'),
+          React.createElement('li', null, '✅ Roster - View scouts by section'),
+          React.createElement('li', null, '✅ Log - See all sign-in/out records'),
+          React.createElement('li', null, '✅ Export to Excel - Download attendance data'),
+          React.createElement('li', null, '✅ Announcements - Post messages for parents'),
+          React.createElement('li', null, '✅ Persistent Storage - Data saves automatically')
+        )
+      ),
+
+      // Messages Feature
+      React.createElement(
+        'div',
+        { className: 'bg-blue-50 border-2 border-blue-300 p-4 rounded-lg' },
+        React.createElement('h3', { className: 'text-lg font-bold text-blue-600 mb-2' }, '📢 Messages for Parents'),
+        React.createElement('p', { className: 'text-gray-700 text-sm mb-2' }, 'In the Setup tab, leaders can:'),
+        React.createElement('ul', { className: 'text-gray-700 text-sm space-y-1 ml-4' },
+          React.createElement('li', null, '• Write messages for entire sections'),
+          React.createElement('li', null, '• Send individual messages to specific children'),
+          React.createElement('li', null, '• Parents see them when they sign in their child')
+        )
+      ),
+
+      // Tips Section
+      React.createElement(
+        'div',
+        { className: 'bg-yellow-50 border-2 border-yellow-300 p-4 rounded-lg' },
+        React.createElement('h3', { className: 'text-lg font-bold text-yellow-600 mb-3' }, '💡 Tips'),
+        React.createElement('ul', { className: 'text-gray-700 space-y-2 text-sm' },
+          React.createElement('li', null, '💻 Best on desktop/tablet for full experience'),
+          React.createElement('li', null, '📱 Responsive design - works on mobile too'),
+          React.createElement('li', null, '💾 All data saves automatically'),
+          React.createElement('li', null, '🔄 Refresh page - data persists'),
+          React.createElement('li', null, '📊 Export feature requires data to exist')
+        )
+      ),
+
+      // Navigation Help
+      React.createElement(
+        'div',
+        null,
+        React.createElement('h3', { className: 'text-lg font-bold text-blue-600 mb-3' }, '🗂️ Tab Guide'),
+        React.createElement('div', { className: 'space-y-3' },
+          React.createElement(
+            'div',
+            { className: 'border-l-4 border-blue-500 pl-3' },
+            React.createElement('h4', { className: 'font-bold text-gray-800' }, '📱 Sign-In'),
+            React.createElement('p', { className: 'text-sm text-gray-700' }, 'Find children by phone and mark them as signed in or out')
           ),
-          React.createElement('p', { className: 'text-gray-700 mt-2' }, 'Click a scout number to quickly sign them in from the Sign-In tab!')
-        ),
-
-        React.createElement(
-          'div',
-          null,
-          React.createElement('h3', { className: 'text-lg font-bold text-orange-600 mb-2 flex items-center gap-2' }, '📋 Roster Tab'),
-          React.createElement('ul', { className: 'list-disc list-inside space-y-2 text-gray-700' },
-            React.createElement('li', null, 'View all registered scouts and leaders'),
-            React.createElement('li', null, 'See their scout names and member numbers'),
-            React.createElement('li', null, 'View their assigned sections')
-          )
-        ),
-
-        React.createElement(
-          'div',
-          null,
-          React.createElement('h3', { className: 'text-lg font-bold text-indigo-600 mb-2 flex items-center gap-2' }, '📊 Log Tab'),
-          React.createElement('ul', { className: 'list-disc list-inside space-y-2 text-gray-700' },
-            React.createElement('li', null, 'View today\'s sign-in/sign-out records'),
-            React.createElement('li', null, 'See timestamps and guardian information'),
-            React.createElement('li', null, 'Monitor attendance in real-time')
-          )
-        ),
-
-        React.createElement(
-          'div',
-          null,
-          React.createElement('h3', { className: 'text-lg font-bold text-pink-600 mb-2 flex items-center gap-2' }, '⚙️ Setup Tab (Admin Only)'),
-          React.createElement('p', { className: 'text-gray-700 mb-2' }, React.createElement('span', { className: 'font-bold' }, 'Admin PIN: '), React.createElement('span', { className: 'font-mono bg-gray-100 px-2 py-1 rounded' }, '1234')),
-          React.createElement('ul', { className: 'list-disc list-inside space-y-2 text-gray-700' },
-            React.createElement('li', null, 'Add/manage scouts and leaders'),
-            React.createElement('li', null, 'Import data from CSV (demo uses built-in data)'),
-            React.createElement('li', null, 'Configure sections and announcements'),
-            React.createElement('li', null, 'Block problematic parents if needed')
-          )
-        ),
-
-        React.createElement(
-          'div',
-          { className: 'bg-green-50 border-2 border-green-300 p-4 rounded-lg' },
-          React.createElement('h3', { className: 'font-bold text-green-600 mb-3' }, '📱 Parent Phone Numbers to Use:'),
-          React.createElement('p', { className: 'text-gray-700 mb-3' }, 'Try these phone numbers in the Sign-In tab:'),
-          React.createElement('ul', { className: 'space-y-2 text-gray-700' },
-            React.createElement('li', null, 
-              React.createElement('span', { className: 'font-mono bg-white px-2 py-1 rounded border border-green-300' }, '0412345601'),
-              ' - Scout 1 (Joey)'
-            ),
-            React.createElement('li', null, 
-              React.createElement('span', { className: 'font-mono bg-white px-2 py-1 rounded border border-green-300' }, '0412345606'),
-              ' - Scout 6 (Cub)'
-            ),
-            React.createElement('li', null, 
-              React.createElement('span', { className: 'font-mono bg-white px-2 py-1 rounded border border-green-300' }, '0412345611'),
-              ' - Scout 11 (Scout)'
-            ),
-            React.createElement('li', null, 
-              React.createElement('span', { className: 'font-mono bg-white px-2 py-1 rounded border border-green-300' }, '0412345616'),
-              ' - Scout 16 (Venturer)'
-            ),
-            React.createElement('li', null, 
-              React.createElement('span', { className: 'font-mono bg-white px-2 py-1 rounded border border-green-300' }, '0412345620'),
-              ' - Scout 20 (Venturer)'
-            )
+          React.createElement(
+            'div',
+            { className: 'border-l-4 border-green-500 pl-3' },
+            React.createElement('h4', { className: 'font-bold text-gray-800' }, '📋 Master List'),
+            React.createElement('p', { className: 'text-sm text-gray-700' }, 'View all scouts numbered 1-20, click to quick sign-in')
           ),
-          React.createElement('p', { className: 'text-gray-600 text-sm mt-3' }, 'Or use any number from 0412345601 to 0412345620 to find different scouts!')
-        ),
-
-        React.createElement(
-          'div',
-          { className: 'bg-blue-50 border-2 border-blue-300 p-4 rounded-lg' },
-          React.createElement('h3', { className: 'font-bold text-blue-600 mb-2' }, '💡 Demo Tips:'),
-          React.createElement('ul', { className: 'list-disc list-inside space-y-1 text-gray-700' },
-            React.createElement('li', null, 'Phone numbers all start with 0412345 (last digits: 601-620)'),
-            React.createElement('li', null, 'Try signing in scouts from different sections'),
-            React.createElement('li', null, 'Change the active section using the Setup tab'),
-            React.createElement('li', null, 'Refresh the page to reset all data back to demo defaults'),
-            React.createElement('li', null, 'No data persists - perfect for safe testing!')
+          React.createElement(
+            'div',
+            { className: 'border-l-4 border-purple-500 pl-3' },
+            React.createElement('h4', { className: 'font-bold text-gray-800' }, '👥 Roster'),
+            React.createElement('p', { className: 'text-sm text-gray-700' }, 'View scouts organized by section (Joeys, Cubs, Scouts, Venturers)')
+          ),
+          React.createElement(
+            'div',
+            { className: 'border-l-4 border-yellow-500 pl-3' },
+            React.createElement('h4', { className: 'font-bold text-gray-800' }, '📊 Log'),
+            React.createElement('p', { className: 'text-sm text-gray-700' }, 'View attendance history and export to Excel')
+          ),
+          React.createElement(
+            'div',
+            { className: 'border-l-4 border-red-500 pl-3' },
+            React.createElement('h4', { className: 'font-bold text-gray-800' }, '⚙️ Setup'),
+            React.createElement('p', { className: 'text-sm text-gray-700' }, 'Add leaders, create announcements, manage admin settings')
           )
         )
       ),
 
-      // Footer (Fixed at bottom)
+      // Getting Help
       React.createElement(
         'div',
-        { className: 'bg-gray-50 p-4 border-t flex gap-3 flex-shrink-0' },
-        React.createElement(
-          'button',
-          {
-            onClick: onClose,
-            className: 'flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition'
-          },
-          'Got It! Let\'s Demo 🎉'
-        ),
-        React.createElement(
-          'button',
-          {
-            onClick: onClose,
-            className: 'flex-1 bg-gray-300 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-400 transition'
-          },
-          'Cancel'
-        )
+        { className: 'bg-gray-50 border-2 border-gray-300 p-4 rounded-lg' },
+        React.createElement('h3', { className: 'text-lg font-bold text-gray-600 mb-2' }, '❓ Need Help?'),
+        React.createElement('p', { className: 'text-gray-700 text-sm' }, 'This instructions panel is always available. Click the minimize button to collapse it, or close it and click "Show Instructions" anytime.')
       )
     )
   );
