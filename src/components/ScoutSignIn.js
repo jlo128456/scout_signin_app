@@ -42,6 +42,15 @@ const ScoutSignIn = () => {
   return React.createElement(
     'div',
     { className: 'min-h-screen bg-[rgb(5,46,22)]' },
+    
+    // Watermark Background Image
+    React.createElement('img', {
+      src: process.env.PUBLIC_URL + '/scout-badge.png',
+      alt: 'watermark',
+      className: 'fixed inset-0 w-full h-full object-contain opacity-5 pointer-events-none z-0',
+      style: { transform: 'rotate(-45deg)', opacity: 0.08 }
+    }),
+    
     React.createElement(
       'div',
       { className: 'max-w-5xl mx-auto p-4' },
