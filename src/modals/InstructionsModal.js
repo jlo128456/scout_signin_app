@@ -9,41 +9,46 @@ const InstructionsModal = ({ isOpen, onClose }) => {
   return React.createElement(
     'div',
     { 
-      // SOLID MODAL - Always on top, fixed position
-      className: 'fixed top-0 right-0 w-full md:w-1/2 h-screen md:h-[95vh] z-50 md:rounded-l-xl overflow-hidden shadow-2xl flex flex-col'
+      // CENTERED MODAL - overlay with center positioning
+      className: 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'
     },
     
-    // Header - SOLID, doesn't move
+    // Modal Box - Centered
     React.createElement(
       'div',
-      { className: 'bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex-shrink-0 flex justify-between items-center' },
-      React.createElement('h2', { className: 'text-2xl font-bold' }, '📋 Instructions'),
+      { className: 'bg-white rounded-lg shadow-2xl w-full max-w-2xl h-[90vh] flex flex-col' },
+      
+      // Header - SOLID
       React.createElement(
         'div',
-        { className: 'flex gap-2' },
+        { className: 'bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex-shrink-0 flex justify-between items-center rounded-t-lg' },
+        React.createElement('h2', { className: 'text-2xl font-bold' }, '📋 Instructions'),
         React.createElement(
-          'button',
-          {
-            onClick: () => setIsMinimized(!isMinimized),
-            className: 'bg-blue-500 hover:bg-blue-400 text-white px-3 py-1 rounded text-sm font-bold'
-          },
-          isMinimized ? '↓ Expand' : '↑ Minimize'
-        ),
-        React.createElement(
-          'button',
-          {
-            onClick: onClose,
-            className: 'bg-red-500 hover:bg-red-600 text-white p-2 rounded'
-          },
-          React.createElement(X, { className: 'w-5 h-5' })
+          'div',
+          { className: 'flex gap-2' },
+          React.createElement(
+            'button',
+            {
+              onClick: () => setIsMinimized(!isMinimized),
+              className: 'bg-blue-500 hover:bg-blue-400 text-white px-3 py-1 rounded text-sm font-bold'
+            },
+            isMinimized ? '↓ Expand' : '↑ Minimize'
+          ),
+          React.createElement(
+            'button',
+            {
+              onClick: onClose,
+              className: 'bg-red-500 hover:bg-red-600 text-white p-2 rounded'
+            },
+            React.createElement(X, { className: 'w-5 h-5' })
+          )
         )
-      )
-    ),
+      ),
 
-    // Content - SCROLLABLE
-    !isMinimized && React.createElement(
-      'div',
-      { className: 'flex-1 overflow-y-auto bg-white p-6 space-y-6' },
+      // Content - SCROLLABLE
+      !isMinimized && React.createElement(
+        'div',
+        { className: 'flex-1 overflow-y-auto bg-white p-6 space-y-6' },
       
       // Welcome Section
       React.createElement(
@@ -183,6 +188,7 @@ const InstructionsModal = ({ isOpen, onClose }) => {
         React.createElement('h3', { className: 'text-lg font-bold text-gray-600 mb-2' }, '❓ Need Help?'),
         React.createElement('p', { className: 'text-gray-700 text-sm' }, 'This instructions panel is always available. Click the minimize button to collapse it, or close it and click "Show Instructions" anytime.')
       )
+    )
     )
   );
 };
