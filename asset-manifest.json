@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/Scout_signin_app/static/css/main.2bdac6a3.css",
-    "main.js": "/Scout_signin_app/static/js/main.709c908d.js",
-    "index.html": "/Scout_signin_app/index.html",
-    "main.2bdac6a3.css.map": "/Scout_signin_app/static/css/main.2bdac6a3.css.map",
-    "main.709c908d.js.map": "/Scout_signin_app/static/js/main.709c908d.js.map"
+    "main.css": "/scout_signin_app/static/css/main.2bdac6a3.css",
+    "main.js": "/scout_signin_app/static/js/main.709c908d.js",
+    "index.html": "/scout_signin_app/index.html",
+    "main.2bdac6a3.css.map": "/scout_signin_app/static/css/main.2bdac6a3.css.map",
+    "main.709c908d.js.map": "/scout_signin_app/static/js/main.709c908d.js.map"
   },
   "entrypoints": [
     "static/css/main.2bdac6a3.css",
