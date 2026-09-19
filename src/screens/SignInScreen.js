@@ -186,6 +186,14 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
     'div',
     { className: 'bg-white p-6 space-y-6' },
     
+    // Scout Logo Badge - TOP
+    React.createElement(
+      'div',
+      { className: 'text-center mb-6' },
+      React.createElement('span', { className: 'text-6xl' }, '⛺'),
+      React.createElement('h1', { className: 'text-3xl font-bold text-green-600 mt-2' }, 'Scout Sign-In')
+    ),
+    
     // Section Info
     React.createElement(
       'div',
