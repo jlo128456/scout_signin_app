@@ -80,6 +80,13 @@ const ScoutSignIn = () => {
     'div',
     { className: 'min-h-screen bg-[rgb(5,46,22)]' },
     
+    // Watermark Background
+    React.createElement(
+      'div',
+      { className: 'watermark' },
+      React.createElement('div', { className: 'watermark-container' }, '⛺')
+    ),
+    
     // Instructions Modal (Demo mode only)
     DEMO_MODE && DEMO_SETTINGS.showInstructionsOnLoad && React.createElement(InstructionsModal, {
       isOpen: showInstructions,
