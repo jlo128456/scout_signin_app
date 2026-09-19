@@ -7,11 +7,12 @@ const InstructionsModal = ({ onClose }) => {
     { className: 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4' },
     React.createElement(
       'div',
-      { className: 'bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-96 overflow-y-auto' },
-      // Header
+      { className: 'bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col' },
+      
+      // Header (Fixed at top)
       React.createElement(
         'div',
-        { className: 'bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex items-center justify-between sticky top-0' },
+        { className: 'bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex items-center justify-between flex-shrink-0' },
         React.createElement(
           'div',
           { className: 'flex items-center gap-3' },
@@ -20,15 +21,15 @@ const InstructionsModal = ({ onClose }) => {
         ),
         React.createElement(
           'button',
-          { onClick: onClose, className: 'hover:bg-blue-500 p-2 rounded-full' },
+          { onClick: onClose, className: 'hover:bg-blue-500 p-2 rounded-full transition' },
           React.createElement(X, { className: 'w-6 h-6' })
         )
       ),
 
-      // Content
+      // Content (Scrollable)
       React.createElement(
         'div',
-        { className: 'p-6 space-y-6' },
+        { className: 'flex-1 overflow-y-auto p-6 space-y-6' },
 
         React.createElement(
           'div',
@@ -102,6 +103,36 @@ const InstructionsModal = ({ onClose }) => {
 
         React.createElement(
           'div',
+          { className: 'bg-green-50 border-2 border-green-300 p-4 rounded-lg' },
+          React.createElement('h3', { className: 'font-bold text-green-600 mb-3' }, '📱 Parent Phone Numbers to Use:'),
+          React.createElement('p', { className: 'text-gray-700 mb-3' }, 'Try these phone numbers in the Sign-In tab:'),
+          React.createElement('ul', { className: 'space-y-2 text-gray-700' },
+            React.createElement('li', null, 
+              React.createElement('span', { className: 'font-mono bg-white px-2 py-1 rounded border border-green-300' }, '0412345601'),
+              ' - Scout 1 (Joey)'
+            ),
+            React.createElement('li', null, 
+              React.createElement('span', { className: 'font-mono bg-white px-2 py-1 rounded border border-green-300' }, '0412345606'),
+              ' - Scout 6 (Cub)'
+            ),
+            React.createElement('li', null, 
+              React.createElement('span', { className: 'font-mono bg-white px-2 py-1 rounded border border-green-300' }, '0412345611'),
+              ' - Scout 11 (Scout)'
+            ),
+            React.createElement('li', null, 
+              React.createElement('span', { className: 'font-mono bg-white px-2 py-1 rounded border border-green-300' }, '0412345616'),
+              ' - Scout 16 (Venturer)'
+            ),
+            React.createElement('li', null, 
+              React.createElement('span', { className: 'font-mono bg-white px-2 py-1 rounded border border-green-300' }, '0412345620'),
+              ' - Scout 20 (Venturer)'
+            )
+          ),
+          React.createElement('p', { className: 'text-gray-600 text-sm mt-3' }, 'Or use any number from 0412345601 to 0412345620 to find different scouts!')
+        ),
+
+        React.createElement(
+          'div',
           { className: 'bg-blue-50 border-2 border-blue-300 p-4 rounded-lg' },
           React.createElement('h3', { className: 'font-bold text-blue-600 mb-2' }, '💡 Demo Tips:'),
           React.createElement('ul', { className: 'list-disc list-inside space-y-1 text-gray-700' },
@@ -114,17 +145,25 @@ const InstructionsModal = ({ onClose }) => {
         )
       ),
 
-      // Footer
+      // Footer (Fixed at bottom)
       React.createElement(
         'div',
-        { className: 'bg-gray-50 p-4 border-t' },
+        { className: 'bg-gray-50 p-4 border-t flex gap-3 flex-shrink-0' },
         React.createElement(
           'button',
           {
             onClick: onClose,
-            className: 'w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700'
+            className: 'flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition'
           },
           'Got It! Let\'s Demo 🎉'
+        ),
+        React.createElement(
+          'button',
+          {
+            onClick: onClose,
+            className: 'flex-1 bg-gray-300 text-gray-800 py-3 rounded-lg font-semibold hover:bg-gray-400 transition'
+          },
+          'Cancel'
         )
       )
     )
