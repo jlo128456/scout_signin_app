@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 
 const AnnouncementsManager = ({ data, setData }) => {
@@ -12,6 +12,24 @@ const AnnouncementsManager = ({ data, setData }) => {
     targetGroup: '', // For group messages (e.g., "Cubs & Scouts")
     targetChildId: '' // For individual messages
   });
+
+  // Load announcements from localStorage on mount
+  useEffect(() => {
+    const savedAnnouncements = localStorage.getItem('scout_announcements');
+    if (savedAnnouncements) {
+      try {
+        const parsed = JSON.parse(savedAnnouncements);
+        setData({ ...data, announcements: parsed });
+      } catch (err) {
+        console.error('Failed to load announcements from storage:', err);
+      }
+    }
+  }, []);
+
+  // Save announcements to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('scout_announcements', JSON.stringify(data.announcements || []));
+  }, [data.announcements]);
 
   const announcements = data.announcements || [];
   const children = data.children || [];

@@ -42,21 +42,14 @@ const ScoutSignIn = () => {
   return React.createElement(
     'div',
     { className: 'min-h-screen bg-[rgb(5,46,22)]' },
-    
-    // Watermark Background
-    React.createElement(
-      'div',
-      { className: 'watermark' },
-      React.createElement('div', { className: 'watermark-container' }, '⛺')
-    ),
-    
     React.createElement(
       'div',
       { className: 'max-w-5xl mx-auto p-4' },
       React.createElement(
         'div',
         { className: 'text-center mb-8 pt-6' },
-        React.createElement('h1', { className: 'text-4xl font-bold text-white mb-2' }, '⛺ Scout Sign-In'),
+        React.createElement('img', { src: '/scout-badge.png', alt: 'Scout Badge', className: 'w-32 h-32 mx-auto mb-6' }),
+        React.createElement('h1', { className: 'text-4xl font-bold text-white mb-2' }, 'Scout Sign-In'),
         React.createElement('p', { className: 'text-gray-300' }, 'Professional attendance tracking')
       ),
 

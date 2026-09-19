@@ -80,13 +80,6 @@ const ScoutSignIn = () => {
     'div',
     { className: 'min-h-screen bg-[rgb(5,46,22)]' },
     
-    // Watermark Background
-    React.createElement(
-      'div',
-      { className: 'watermark' },
-      React.createElement('div', { className: 'watermark-container' }, '⛺')
-    ),
-    
     // Instructions Modal (Demo mode only)
     DEMO_MODE && DEMO_SETTINGS.showInstructionsOnLoad && React.createElement(InstructionsModal, {
       isOpen: showInstructions,
@@ -114,12 +107,12 @@ const ScoutSignIn = () => {
         React.createElement('img', { 
           src: '/scout-badge.png', 
           alt: 'Scout', 
-          className: 'w-20 h-20 mx-auto mb-4',
+          className: 'w-32 h-32 mx-auto mb-6',
           onError: (e) => {
             e.target.style.display = 'none';
           }
         }),
-        React.createElement('h1', { className: 'text-4xl font-bold text-white mb-2' }, '🏕️ Scout Sign-In'),
+        React.createElement('h1', { className: 'text-4xl font-bold text-white mb-2' }, 'Scout Sign-In'),
         DEMO_MODE && DEMO_SETTINGS.showDemoBanner && React.createElement('p', { className: 'text-yellow-300 font-bold text-lg' }, '🎬 DEMO MODE - Data resets on refresh'),
         React.createElement('p', { className: 'text-gray-300' }, 'Professional attendance tracking')
       ),

@@ -1,10 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Lock } from 'lucide-react';
 
 const LogScreen = ({ data }) => {
   const [pinEntered, setPinEntered] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [correctPin] = useState('1234');
+
+  // Save attendance logs to localStorage whenever data changes
+  useEffect(() => {
+    if (data.attendance) {
+      localStorage.setItem('scout_logs', JSON.stringify(data.attendance));
+    }
+  }, [data.attendance]);
+
+  // Note: Logs are automatically saved whenever attendance data changes
+  // Make sure parent component (ScoutSignIn-Demo) also persists data.attendance
 
   const handlePinSubmit = () => {
     if (pinEntered === correctPin) {
