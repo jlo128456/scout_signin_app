@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/scout_signin_app/static/css/main.49efccdc.css",
-    "main.js": "/scout_signin_app/static/js/main.e6bdd97d.js",
+    "main.css": "/scout_signin_app/static/css/main.08c81920.css",
+    "main.js": "/scout_signin_app/static/js/main.d40a71ba.js",
     "index.html": "/scout_signin_app/index.html",
-    "main.49efccdc.css.map": "/scout_signin_app/static/css/main.49efccdc.css.map",
-    "main.e6bdd97d.js.map": "/scout_signin_app/static/js/main.e6bdd97d.js.map"
+    "main.08c81920.css.map": "/scout_signin_app/static/css/main.08c81920.css.map",
+    "main.d40a71ba.js.map": "/scout_signin_app/static/js/main.d40a71ba.js.map"
   },
   "entrypoints": [
-    "static/css/main.49efccdc.css",
-    "static/js/main.e6bdd97d.js"
+    "static/css/main.08c81920.css",
+    "static/js/main.d40a71ba.js"
   ]
 }
