@@ -2,6 +2,72 @@ import React, { useState, useEffect } from 'react';
 import PhoneInputSection from '../components/PhoneInputSection-Compact';
 import { Plus, AlertCircle } from 'lucide-react';
 
+// Display Announcements ONLY for the selected child
+const DisplayAnnouncementsForChild = ({ announcements, currentChild }) => {
+  if (!announcements || announcements.length === 0) return null;
+  if (!currentChild) return null;
+
+  // Filter announcements for this specific child
+  const relevantAnnouncements = announcements.filter(announcement => {
+    // Individual message - only show if it's for this child
+    if (announcement.type === 'individual') {
+      return announcement.targetChildId === currentChild.id;
+    }
+    // Section message - show if child is in that section
+    if (announcement.type === 'section') {
+      return announcement.targetSection === currentChild.section;
+    }
+    return false;
+  });
+
+  if (relevantAnnouncements.length === 0) return null;
+
+  const getTypeColor = (type) => {
+    switch (type) {
+      case 'individual':
+        return 'bg-purple-50 border-l-4 border-purple-500';
+      default:
+        return 'bg-blue-50 border-l-4 border-blue-500';
+    }
+  };
+
+  const getTypeIcon = (type) => {
+    switch (type) {
+      case 'individual':
+        return '💜';
+      default:
+        return 'ℹ️';
+    }
+  };
+
+  return React.createElement(
+    'div',
+    { className: 'mb-6 space-y-3' },
+    React.createElement('h3', { className: 'font-bold text-lg text-gray-700' }, `📢 Message for ${currentChild.name}`),
+    relevantAnnouncements.map(announcement =>
+      React.createElement(
+        'div',
+        {
+          key: announcement.id,
+          className: `p-4 rounded-lg ${getTypeColor(announcement.type)}`
+        },
+        React.createElement(
+          'div',
+          { className: 'flex items-start gap-3' },
+          React.createElement('span', { className: 'text-2xl' }, getTypeIcon(announcement.type)),
+          React.createElement(
+            'div',
+            { className: 'flex-1' },
+            React.createElement('h4', { className: 'font-bold text-gray-800' }, announcement.title),
+            React.createElement('p', { className: 'text-gray-700 text-sm whitespace-pre-wrap mt-1' }, announcement.message),
+            React.createElement('p', { className: 'text-xs text-gray-500 mt-2' }, `Posted: ${new Date(announcement.createdAt).toLocaleString()}`)
+          )
+        )
+      )
+    )
+  );
+};
+
 const SignInScreen = ({ data, setData, selectedChild }) => {
   const [phone, setPhone] = useState('');
   const [child, setChild] = useState(null);
@@ -258,6 +324,9 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
         )
       )
     ),
+
+    // Show announcements for this child
+    child && DisplayAnnouncementsForChild({ announcements: data.announcements || [], currentChild: child }),
 
     // Show child if found
     child && React.createElement(
