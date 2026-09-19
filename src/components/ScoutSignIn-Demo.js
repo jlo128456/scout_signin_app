@@ -81,7 +81,8 @@ const ScoutSignIn = () => {
     { className: 'min-h-screen bg-[rgb(5,46,22)]' },
     
     // Instructions Modal (Demo mode only)
-    DEMO_MODE && DEMO_SETTINGS.showInstructionsOnLoad && showInstructions && React.createElement(InstructionsModal, {
+    DEMO_MODE && DEMO_SETTINGS.showInstructionsOnLoad && React.createElement(InstructionsModal, {
+      isOpen: showInstructions,
       onClose: () => setShowInstructions(false)
     }),
 
@@ -145,7 +146,7 @@ const ScoutSignIn = () => {
       ),
 
       // Help Button (Demo mode only)
-      DEMO_MODE && DEMO_SETTINGS.showInstructionsOnLoad && React.createElement(
+      DEMO_MODE && React.createElement(
         'div',
         { className: 'mt-4 text-center' },
         React.createElement(
@@ -154,7 +155,7 @@ const ScoutSignIn = () => {
             onClick: () => setShowInstructions(true),
             className: 'px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700'
           },
-          '❓ Show Instructions'
+          '📋 Show Instructions'
         )
       )
     )
