@@ -35,10 +35,10 @@ const AnnouncementsManager = ({ data, setData }) => {
       id: Date.now(),
       title: formData.title,
       message: formData.message,
-      type: formData.type,
-      targetSection: formData.type === 'section' ? formData.targetSection : null,
-      targetGroup: formData.type === 'group' ? formData.targetGroup : null,
-      targetChildId: formData.type === 'individual' ? formData.targetChildId : null,
+      type: formData.type || 'section',
+      targetSection: (formData.type || 'section') === 'section' ? formData.targetSection : null,
+      targetGroup: (formData.type || 'section') === 'group' ? formData.targetGroup : null,
+      targetChildId: (formData.type || 'section') === 'individual' ? formData.targetChildId : null,
       createdAt: new Date().toISOString(),
       createdBy: 'Leader'
     };
@@ -109,14 +109,16 @@ const AnnouncementsManager = ({ data, setData }) => {
   };
 
   const getTargetInfo = (announcement) => {
-    if (announcement.type === 'section') {
+    const type = announcement.type || 'section';
+    if (type === 'section') {
       return `For ${announcement.targetSection} Section`;
-    } else if (announcement.type === 'group') {
+    } else if (type === 'group') {
       return `For ${announcement.targetGroup}`;
-    } else if (announcement.type === 'individual') {
+    } else if (type === 'individual') {
       const child = children.find(c => c.id === announcement.targetChildId);
       return `For ${child?.name || 'Unknown Child'}`;
     }
+    return 'Announcement';
   };
 
   return React.createElement(
@@ -297,7 +299,7 @@ const AnnouncementsManager = ({ data, setData }) => {
                     React.createElement(
                       'span',
                       { className: `px-2 py-1 rounded text-sm font-bold ${getTypeBadgeColor(announcement.type)}` },
-                      announcement.type.toUpperCase()
+                      (announcement.type || 'section').toUpperCase()
                     ),
                     React.createElement(
                       'span',
