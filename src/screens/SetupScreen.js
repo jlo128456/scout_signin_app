@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Lock, Plus, X, Edit2, Download, Upload } from 'lucide-react';
 import CSVImport from '../components/CSVImport-Compact';
+import AnnouncementsManager from '../components/AnnouncementsManager';
 
 const SetupScreen = ({ data, setData }) => {
   const [pinEntered, setPinEntered] = useState('');
@@ -650,6 +651,13 @@ const SetupScreen = ({ data, setData }) => {
           )
         )
       )
+    ),
+
+    // Messages to Parents (Announcements Manager)
+    React.createElement(
+      'div',
+      { className: 'border-t pt-6' },
+      React.createElement(AnnouncementsManager, { data, setData })
     ),
 
     // CSV Import (Optional)

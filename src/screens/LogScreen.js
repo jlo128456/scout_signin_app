@@ -16,6 +16,49 @@ const LogScreen = ({ data }) => {
     }
   };
 
+  const exportToExcel = () => {
+    // Build CSV data
+    const headers = ['Scout Name', 'Phone', 'Section', 'Status', 'Sign-In Time', 'Sign-Out Guardian', 'Date'];
+    const rows = [];
+
+    Object.entries(data.attendance || {}).forEach(([childId, att]) => {
+      const child = data.children.find(c => c.id === childId);
+      if (!child) return;
+
+      const status = att.signedIn ? 'Signed In' : 'Not Here';
+      const signInTime = att.signInTime || '-';
+      const signOutGuardian = att.signOutGuardian || '-';
+      const date = new Date().toISOString().split('T')[0];
+
+      rows.push([
+        child.name,
+        child.phone || '-',
+        child.section || '-',
+        status,
+        signInTime,
+        signOutGuardian,
+        date
+      ]);
+    });
+
+    // Create CSV content
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `scout-signin-log-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
   if (!isAuthenticated) {
     return React.createElement(
       'div',
@@ -83,12 +126,24 @@ const LogScreen = ({ data }) => {
       { className: 'flex justify-between items-center mb-6' },
       React.createElement('h2', { className: 'text-2xl font-bold' }, '📋 Sign-In Log'),
       React.createElement(
-        'button',
-        {
-          onClick: () => setIsAuthenticated(false),
-          className: 'bg-red-500 text-white px-4 py-2 rounded font-semibold hover:bg-red-600',
-        },
-        'Lock'
+        'div',
+        { className: 'flex gap-2' },
+        React.createElement(
+          'button',
+          {
+            onClick: exportToExcel,
+            className: 'bg-green-500 text-white px-4 py-2 rounded font-semibold hover:bg-green-600',
+          },
+          '📥 Export to Excel'
+        ),
+        React.createElement(
+          'button',
+          {
+            onClick: () => setIsAuthenticated(false),
+            className: 'bg-red-500 text-white px-4 py-2 rounded font-semibold hover:bg-red-600',
+          },
+          'Lock'
+        )
       )
     ),
     
