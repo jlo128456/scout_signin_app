@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PhoneInputSection from '../components/PhoneInputSection-Compact';
 import { Plus, AlertCircle } from 'lucide-react';
 
-const SignInScreen = ({ data, setData }) => {
+const SignInScreen = ({ data, setData, selectedChild }) => {
   const [phone, setPhone] = useState('');
   const [child, setChild] = useState(null);
   const [showGuardianModal, setShowGuardianModal] = useState(false);
@@ -12,6 +12,14 @@ const SignInScreen = ({ data, setData }) => {
   const [newChildName, setNewChildName] = useState('');
   const [newChildPhone, setNewChildPhone] = useState('');
   const [blockedWarning, setBlockedWarning] = useState(null);
+
+  // Handle selected child from master list
+  useEffect(() => {
+    if (selectedChild) {
+      setChild(selectedChild);
+      setPhone(selectedChild.phone);
+    }
+  }, [selectedChild]);
 
   const currentSection = data.currentSection || 'Joeys';
   const signedInCount = Object.values(data.attendance || {}).filter(a => a.signedIn).length;
