@@ -387,6 +387,35 @@ input::placeholder {
   max-height: 12rem;
 }
 
+.max-h-96 {
+  max-height: 24rem;
+}
+
+/* ============ FLEXBOX UTILITIES FOR MODALS ============ */
+
+.flex-1 {
+  flex: 1 1 0%;
+}
+
+.flex-shrink-0 {
+  flex-shrink: 0;
+}
+
+/* Key class for scrollable flex containers */
+.min-h-0 {
+  min-height: 0;
+}
+
+/* ============ HEIGHT UTILITIES ============ */
+
+.h-\[90vh\] {
+  height: 90vh;
+}
+
+.max-h-\[90vh\] {
+  max-height: 90vh;
+}
+
 /* ============ UTILITY ============ */
 
 .relative { position: relative; }
@@ -395,6 +424,12 @@ input::placeholder {
 .top-3 { top: 0.75rem; }
 .pl-10 { padding-left: 2.5rem; }
 .pr-4 { padding-right: 1rem; }
+
+.transition {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
 
 /* ============ LOGO & BADGE ============ */
 
