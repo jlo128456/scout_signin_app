@@ -581,7 +581,7 @@ input::placeholder {
   transform: rotate(-45deg);
   width: 600px;
   height: 600px;
-  background-image: url('/scout-badge.png');
+  background-image: url('scout-badge.png');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
