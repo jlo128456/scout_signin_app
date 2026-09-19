@@ -48,7 +48,7 @@ const ScoutSignIn = () => {
       React.createElement(
         'div',
         { className: 'text-center mb-8 pt-6' },
-        React.createElement('img', { src: '/scout_signin_app/scout-badge.png', alt: 'Scout Badge', className: 'w-32 h-32 mx-auto mb-6' }),
+        React.createElement('img', { src: process.env.PUBLIC_URL + '/scout-badge.png', alt: 'Scout Badge', className: 'w-32 h-32 mx-auto mb-6' }),
         React.createElement('h1', { className: 'text-4xl font-bold text-white mb-2' }, 'Scout Sign-In'),
         React.createElement('p', { className: 'text-gray-300' }, 'Professional attendance tracking')
       ),

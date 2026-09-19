@@ -105,7 +105,7 @@ const ScoutSignIn = () => {
         'div',
         { className: 'text-center mb-8 pt-6' },
         React.createElement('img', { 
-          src: '/scout_signin_app/scout-badge.png', 
+          src: process.env.PUBLIC_URL + '/scout-badge.png', 
           alt: 'Scout', 
           className: 'w-32 h-32 mx-auto mb-6',
           onError: (e) => {
