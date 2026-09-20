@@ -350,6 +350,45 @@ input::placeholder {
 .bg-black\/50 {
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(2px);
+  z-index: 40;
+  pointer-events: auto;
+}
+
+/* Modal content - prevent bleed through */
+.z-50 { 
+  z-index: 50;
+  position: relative;
+}
+
+.z-40 { z-index: 40; }
+
+.z-0 { z-index: 0; }
+
+.z-10 { z-index: 10; }
+
+/* Modal scrolling */
+.overflow-y-auto {
+  overflow-y: auto;
+  max-height: 90vh;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1);
+}
+
+.overflow-y-auto::-webkit-scrollbar {
+  width: 8px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 /* ============ RESPONSIVE ============ */
@@ -357,6 +396,26 @@ input::placeholder {
 @media (max-width: 768px) {
   .md\:grid-cols-3 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .overflow-y-auto {
+    max-height: 85vh;
+  }
+}
+
+@media (max-width: 640px) {
+  .overflow-y-auto {
+    max-height: 80vh;
+    padding-right: 8px;
+  }
+
+  .text-4xl {
+    font-size: 1.75rem;
+  }
+
+  button {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.95rem;
   }
 }
 
@@ -425,4 +484,45 @@ input::placeholder {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+/* ============ LIST & TEXT STYLING ============ */
+
+ul, ol {
+  list-style-position: inside;
+  margin: 1rem 0;
+}
+
+li {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+strong {
+  font-weight: 700;
+  color: inherit;
+}
+
+/* Colored bullet points */
+li::marker {
+  font-weight: 700;
+}
+
+/* Ensure emojis render */
+.emoji {
+  display: inline-block;
+  margin-right: 0.25rem;
+}
+
+/* Instructions and guide text */
+.guide-text, .instruction-text {
+  line-height: 1.7;
+  color: #374151;
+}
+
+.instruction-title {
+  font-weight: 700;
+  font-size: 1.125rem;
+  margin: 0.75rem 0 0.5rem 0;
+  color: #111827;
 }
