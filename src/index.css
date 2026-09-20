@@ -32,7 +32,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 0.75rem;
+  padding-top: max(0.75rem, env(safe-area-inset-top, 0px));
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+  padding-left: max(0.75rem, env(safe-area-inset-left, 0px));
+  padding-right: max(0.75rem, env(safe-area-inset-right, 0px));
 }
 
 /* ============================================
@@ -48,11 +52,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.05;
+  opacity: 0.08;
   pointer-events: none;
   z-index: 0;
   user-select: none;
   overflow: hidden;
+  will-change: opacity;
 }
 
 .watermark-container {
@@ -62,6 +67,29 @@ body {
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+}
+
+/* Optimize watermark for mobile */
+@media (max-width: 768px) {
+  .watermark {
+    opacity: 0.06;
+  }
+
+  .watermark-container {
+    width: 600px;
+    height: 600px;
+  }
+}
+
+@media (max-width: 480px) {
+  .watermark {
+    opacity: 0.05;
+  }
+
+  .watermark-container {
+    width: 450px;
+    height: 450px;
+  }
 }
 
 /* ============================================
@@ -433,18 +461,21 @@ h1, h2, h3, h4, h5, h6 {
    ============================================ */
 
 button, .button {
-  padding: 0.75rem 1.5rem;
+  padding: 0.875rem 1.5rem;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: 0.625rem;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
   text-decoration: none;
+  min-height: 44px;
+  min-width: 44px;
+  white-space: nowrap;
 }
 
 button:hover {
@@ -459,6 +490,15 @@ button:active {
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Better touch target on mobile */
+@media (max-width: 768px) {
+  button, .button {
+    padding: 1rem 1.5rem;
+    min-height: 48px;
+    font-size: 1rem;
+  }
 }
 
 .bg-blue-600 {
@@ -638,57 +678,51 @@ label {
    RESPONSIVE
    ============================================ */
 
+/* ============================================
+   TABLET RESPONSIVE (768px and below)
+   ============================================ */
+
 @media (max-width: 768px) {
   .max-w-5xl {
     padding: 1rem;
+    width: 100%;
   }
 
   .text-4xl {
-    font-size: 1.875rem;
+    font-size: 2rem;
+    line-height: 2.25rem;
   }
 
   .text-3xl {
     font-size: 1.5rem;
+    line-height: 2rem;
   }
 
   .text-2xl {
     font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .text-xl {
+    font-size: 1.1rem;
+  }
+
+  .text-lg {
+    font-size: 1rem;
   }
 
   .w-32 {
-    width: 6rem;
-    height: 6rem;
+    width: 7rem;
+    height: 7rem;
   }
 
   .h-32 {
-    height: 6rem;
+    height: 7rem;
   }
 
   .grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  button {
-    padding: 0.625rem 1.25rem;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .max-w-5xl {
-    padding: 0.75rem;
-  }
-
-  .text-4xl {
-    font-size: 1.5rem;
-  }
-
-  .text-3xl {
-    font-size: 1.25rem;
-  }
-
-  .text-2xl {
-    font-size: 1.125rem;
+    gap: 1rem;
   }
 
   .mb-8 {
@@ -703,23 +737,230 @@ label {
     gap: 0.75rem;
   }
 
+  input, textarea, select {
+    font-size: 16px;
+    padding: 0.875rem;
+  }
+}
+
+/* ============================================
+   MOBILE RESPONSIVE (640px and below)
+   ============================================ */
+
+@media (max-width: 640px) {
+  .max-w-5xl {
+    padding: 0.5rem;
+    width: 100%;
+  }
+
+  .min-h-screen {
+    padding: 0.5rem;
+  }
+
+  .text-4xl {
+    font-size: 1.75rem;
+    line-height: 2rem;
+  }
+
+  .text-3xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .text-2xl {
+    font-size: 1.1rem;
+    line-height: 1.5rem;
+  }
+
+  .text-xl {
+    font-size: 1rem;
+  }
+
+  .text-lg {
+    font-size: 0.95rem;
+  }
+
+  .mb-8 {
+    margin-bottom: 1.25rem;
+  }
+
+  .mb-6 {
+    margin-bottom: 0.875rem;
+  }
+
+  .mb-4 {
+    margin-bottom: 0.75rem;
+  }
+
+  .gap-4 {
+    gap: 0.625rem;
+  }
+
+  .gap-2 {
+    gap: 0.375rem;
+  }
+
+  .grid-cols-2 {
+    grid-template-columns: 1fr;
+    gap: 0.875rem;
+  }
+
+  .p-4 {
+    padding: 0.875rem;
+  }
+
+  .p-6 {
+    padding: 1rem;
+  }
+
+  .px-8 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .px-6 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .py-4 {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .w-32 {
+    width: 5.5rem;
+    height: 5.5rem;
+  }
+
+  .h-32 {
+    height: 5.5rem;
+  }
+
+  input, textarea, select {
+    font-size: 16px;
+    padding: 0.875rem 0.75rem;
+    border-radius: 0.375rem;
+  }
+
+  button, .button {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  label {
+    font-size: 0.9rem;
+  }
+
+  .bg-white {
+    border-radius: 12px;
+  }
+}
+
+/* ============================================
+   SMALL PHONE (480px and below)
+   ============================================ */
+
+@media (max-width: 480px) {
+  .max-w-5xl {
+    padding: 0.375rem;
+  }
+
+  .min-h-screen {
+    padding: 0.375rem;
+  }
+
+  .text-4xl {
+    font-size: 1.5rem;
+    line-height: 1.75rem;
+  }
+
+  .text-3xl {
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+  }
+
+  .text-2xl {
+    font-size: 1rem;
+  }
+
+  .text-xl {
+    font-size: 0.9rem;
+  }
+
+  .mb-8 {
+    margin-bottom: 1rem;
+  }
+
+  .mb-6 {
+    margin-bottom: 0.75rem;
+  }
+
+  .mb-4 {
+    margin-bottom: 0.625rem;
+  }
+
+  .gap-4 {
+    gap: 0.5rem;
+  }
+
+  .gap-2 {
+    gap: 0.25rem;
+  }
+
+  .gap-6 {
+    gap: 0.75rem;
+  }
+
+  .w-32 {
+    width: 4.5rem;
+    height: 4.5rem;
+  }
+
+  .h-32 {
+    height: 4.5rem;
+  }
+
+  .p-4 {
+    padding: 0.75rem;
+  }
+
+  .p-6 {
+    padding: 0.875rem;
+  }
+
+  .px-8, .px-6 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  button, .button {
+    width: 100%;
+    padding: 0.75rem 0.875rem;
+    font-size: 0.875rem;
+  }
+
+  input, textarea, select {
+    font-size: 16px;
+    padding: 0.75rem 0.625rem;
+  }
+
   .grid-cols-2 {
     grid-template-columns: 1fr;
   }
 
-  button {
-    width: 100%;
-    padding: 0.625rem 1rem;
-    font-size: 0.875rem;
+  .bg-white {
+    border-radius: 10px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
   }
 
-  .w-32 {
-    width: 5rem;
-    height: 5rem;
+  .pt-6 {
+    padding-top: 1rem;
   }
 
-  .h-32 {
-    height: 5rem;
+  .pb-8 {
+    padding-bottom: 1.25rem;
   }
 }
 
