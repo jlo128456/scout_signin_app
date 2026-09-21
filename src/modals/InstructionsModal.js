@@ -32,7 +32,7 @@ const InstructionsModal = ({ onClose }) => {
             left: '50%',
             transform: 'translate(-50%, -50%)',
             zIndex: 50,
-            pointerEvents: 'auto',
+            pointerEvents: 'none',
           }}
         >
           <div
@@ -46,6 +46,7 @@ const InstructionsModal = ({ onClose }) => {
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden',
+              pointerEvents: 'auto',
             }}
           >
             {/* HEADER */}
@@ -315,6 +316,8 @@ const InstructionsModal = ({ onClose }) => {
             >
               <button
                 onClick={() => setIsMinimized(true)}
+                onMouseEnter={(e) => e.target.style.backgroundColor = '#d1d5db'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = '#e5e7eb'}
                 style={{
                   flex: 1,
                   padding: '0.75rem 1rem',
@@ -327,7 +330,6 @@ const InstructionsModal = ({ onClose }) => {
                   fontSize: '0.95rem',
                   transition: 'all 0.3s',
                 }}
-                onHover={(e) => e.target.style.backgroundColor = '#d1d5db'}
               >
                 Minimize
               </button>
