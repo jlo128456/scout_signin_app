@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 
-const InstructionsModal = ({ onClose }) => {
+const InstructionsModal = ({ isOpen, setIsOpen }) => {
   const [isMinimized, setIsMinimized] = useState(false);
 
-  if (!onClose) return null; // Don't render if not open
+  // Don't render if not open
+  if (!isOpen) return null;
+
+  const handleClose = () => {
+    setIsMinimized(false);
+    setIsOpen(false);
+  };
 
   return (
     <>
-      {/* DARK BACKDROP - Blocks everything behind (z-40) */}
+      {/* DARK BACKDROP */}
       <div
         style={{
           position: 'fixed',
@@ -17,13 +23,10 @@ const InstructionsModal = ({ onClose }) => {
           zIndex: 40,
           pointerEvents: 'auto',
         }}
-        onClick={(e) => {
-          e.stopPropagation();
-          onClose();
-        }}
+        onClick={handleClose}
       />
 
-      {/* MODAL CONTENT - Centered in middle (z-50) */}
+      {/* MODAL CONTENT */}
       {!isMinimized && (
         <div
           style={{
@@ -32,7 +35,6 @@ const InstructionsModal = ({ onClose }) => {
             left: '50%',
             transform: 'translate(-50%, -50%)',
             zIndex: 50,
-            pointerEvents: 'none',
           }}
         >
           <div
@@ -46,7 +48,6 @@ const InstructionsModal = ({ onClose }) => {
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden',
-              pointerEvents: 'auto',
             }}
           >
             {/* HEADER */}
@@ -65,10 +66,7 @@ const InstructionsModal = ({ onClose }) => {
                 📖 Tab Guide
               </h2>
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClose();
-                }}
+                onClick={handleClose}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -316,8 +314,6 @@ const InstructionsModal = ({ onClose }) => {
             >
               <button
                 onClick={() => setIsMinimized(true)}
-                onMouseEnter={(e) => e.target.style.backgroundColor = '#d1d5db'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = '#e5e7eb'}
                 style={{
                   flex: 1,
                   padding: '0.75rem 1rem',
@@ -334,10 +330,7 @@ const InstructionsModal = ({ onClose }) => {
                 Minimize
               </button>
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onClose();
-                }}
+                onClick={handleClose}
                 style={{
                   flex: 1,
                   padding: '0.75rem 1rem',
@@ -358,7 +351,7 @@ const InstructionsModal = ({ onClose }) => {
         </div>
       )}
 
-      {/* MINIMIZED BADGE - Small button when minimized (z-45) */}
+      {/* MINIMIZED BADGE */}
       {isMinimized && (
         <button
           onClick={() => setIsMinimized(false)}
