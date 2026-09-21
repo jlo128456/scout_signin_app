@@ -4,9 +4,11 @@ import SignInScreen from '../screens/SignInScreen';
 import RosterScreen from '../screens/RosterScreen';
 import LogScreen from '../screens/LogScreen';
 import SetupScreen from '../screens/SetupScreen';
+import InstructionsModal from '../modals/InstructionsModal';
 
 const ScoutSignIn = () => {
   const [screen, setScreen] = useState('signin');
+  const [showInstructions, setShowInstructions] = useState(false);
   const [data, setData] = useState(() => {
     const saved = localStorage.getItem('scout_data');
     return saved ? JSON.parse(saved) : {
@@ -43,6 +45,12 @@ const ScoutSignIn = () => {
     'div',
     { className: 'min-h-screen bg-[rgb(5,46,22)]' },
     
+    // Instructions Modal
+    React.createElement(InstructionsModal, {
+      isOpen: showInstructions,
+      setIsOpen: setShowInstructions
+    }),
+    
     // Watermark Background Image
     React.createElement('img', {
       src: process.env.PUBLIC_URL + '/scout-badge.png',
@@ -59,7 +67,15 @@ const ScoutSignIn = () => {
         { className: 'text-center mb-8 pt-6' },
         React.createElement('img', { src: process.env.PUBLIC_URL + '/scout-badge.png', alt: 'Scout Badge', className: 'w-32 h-32 mx-auto mb-6' }),
         React.createElement('h1', { className: 'text-4xl font-bold text-white mb-2' }, 'Scout Sign-In'),
-        React.createElement('p', { className: 'text-gray-300' }, 'Professional attendance tracking')
+        React.createElement('p', { className: 'text-gray-300' }, 'Professional attendance tracking'),
+        React.createElement(
+          'button',
+          {
+            onClick: () => setShowInstructions(true),
+            className: 'mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700'
+          },
+          '📋 Show Instructions'
+        )
       ),
 
       React.createElement(ScreenComponent, { data, setData }),
