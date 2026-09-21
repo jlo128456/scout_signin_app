@@ -54,7 +54,7 @@ const AdminPinModal = ({ onClose, onSuccess }) => {
             }}
             onKeyPress={handleKeyPress}
             className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-center text-2xl font-bold tracking-widest focus:outline-none focus:border-blue-500"
-            autoFocus={true}
+            autoFocus
           />
 
           <div className="flex gap-2">

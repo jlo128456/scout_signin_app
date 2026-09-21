@@ -226,31 +226,27 @@ const SetupScreen = ({ data, setData }) => {
   };
 
   if (!isAuthenticated) {
-    return React.createElement(
-      'div',
-      { className: 'bg-white p-6 rounded-lg shadow max-w-md mx-auto mt-20' },
-      React.createElement(
-        'div',
-        { className: 'text-center mb-6' },
-        React.createElement(Lock, { className: 'w-16 h-16 mx-auto text-red-600 mb-4' }),
-        React.createElement('h2', { className: 'text-2xl font-bold' }, 'Setup Protected'),
-        React.createElement('p', { className: 'text-gray-600 mt-2' }, 'Enter PIN to access setup')
-      ),
-      React.createElement('input', {
-        type: 'password',
-        placeholder: 'Enter PIN',
-        value: pinEntered,
-        onChange: (e) => setPinEntered(e.target.value),
-        className: 'w-full px-4 py-3 border rounded-lg mb-4 focus:outline-none focus:border-blue-500',
-      }),
-      React.createElement(
-        'button',
-        {
-          onClick: handlePinSubmit,
-          className: 'w-full bg-blue-500 text-white py-3 rounded-lg font-bold hover:bg-blue-600',
-        },
-        'Unlock'
-      )
+    return (
+      <div className="bg-white p-6 rounded-lg shadow max-w-md mx-auto mt-20">
+        <div className="text-center mb-6">
+          <Lock className="w-16 h-16 mx-auto text-red-600 mb-4" />
+          <h2 className="text-2xl font-bold">Setup Protected</h2>
+          <p className="text-gray-600 mt-2">Enter PIN to access setup</p>
+        </div>
+        <input
+          type="password"
+          placeholder="Enter PIN"
+          value={pinEntered}
+          onChange={(e) => setPinEntered(e.target.value)}
+          className="w-full px-4 py-3 border rounded-lg mb-4 focus:outline-none focus:border-blue-500"
+        />
+        <button
+          onClick={handlePinSubmit}
+          className="w-full bg-blue-500 text-white py-3 rounded-lg font-bold hover:bg-blue-600"
+        >
+          Unlock
+        </button>
+      </div>
     );
   }
 
@@ -260,416 +256,351 @@ const SetupScreen = ({ data, setData }) => {
   const allLeaders = data.leaders || [];
   const blockedParents = data.blockedParents || [];
 
-  return React.createElement(
-    'div',
-    { className: 'bg-white p-6 rounded-lg space-y-6' },
-    React.createElement(
-      'div',
-      { className: 'flex justify-between items-center' },
-      React.createElement('h2', { className: 'text-2xl font-bold' }, '⚙️ Setup'),
-      React.createElement(
-        'button',
-        {
-          onClick: () => setIsAuthenticated(false),
-          className: 'bg-red-500 text-white px-4 py-2 rounded font-semibold hover:bg-red-600',
-        },
-        'Lock'
-      )
-    ),
+  return (
+    <div className="bg-white p-6 rounded-lg space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">⚙️ Setup</h2>
+        <button
+          onClick={() => setIsAuthenticated(false)}
+          className="bg-red-500 text-white px-4 py-2 rounded font-semibold hover:bg-red-600"
+        >
+          Lock
+        </button>
+      </div>
 
-    // Change PIN
-    React.createElement(
-      'div',
-      { className: 'bg-purple-50 p-4 rounded-lg border border-purple-200' },
-      React.createElement('h3', { className: 'font-bold text-lg mb-3' }, '🔐 Change PIN'),
-      React.createElement('p', { className: 'text-sm text-gray-600 mb-3' }, `Current PIN: ${correctPin}`),
-      React.createElement(
-        'div',
-        { className: 'space-y-2' },
-        React.createElement('input', {
-          type: 'password',
-          placeholder: 'New PIN',
-          value: newPin,
-          onChange: (e) => setNewPin(e.target.value),
-          className: 'w-full px-3 py-2 border rounded focus:outline-none focus:border-purple-500',
-        }),
-        React.createElement('input', {
-          type: 'password',
-          placeholder: 'Confirm new PIN',
-          value: confirmNewPin,
-          onChange: (e) => setConfirmNewPin(e.target.value),
-          className: 'w-full px-3 py-2 border rounded focus:outline-none focus:border-purple-500 mb-2',
-        }),
-        React.createElement(
-          'button',
-          {
-            onClick: changePin,
-            className: 'w-full bg-purple-500 text-white py-2 rounded font-semibold hover:bg-purple-600',
-          },
-          'Update PIN'
-        )
-      )
-    ),
+      {/* Change PIN */}
+      <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+        <h3 className="font-bold text-lg mb-3">🔐 Change PIN</h3>
+        <p className="text-sm text-gray-600 mb-3">Current PIN: {correctPin}</p>
+        <div className="space-y-2">
+          <input
+            type="password"
+            placeholder="New PIN"
+            value={newPin}
+            onChange={(e) => setNewPin(e.target.value)}
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:border-purple-500"
+          />
+          <input
+            type="password"
+            placeholder="Confirm new PIN"
+            value={confirmNewPin}
+            onChange={(e) => setConfirmNewPin(e.target.value)}
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:border-purple-500 mb-2"
+          />
+          <button
+            onClick={changePin}
+            className="w-full bg-purple-500 text-white py-2 rounded font-semibold hover:bg-purple-600"
+          >
+            Update PIN
+          </button>
+        </div>
+      </div>
 
-    // Export/Import Master List
-    React.createElement(
-      'div',
-      { className: 'bg-green-50 p-4 rounded-lg border border-green-200' },
-      React.createElement('h3', { className: 'font-bold text-lg mb-3' }, '💾 Master List Backup'),
-      React.createElement('p', { className: 'text-sm text-gray-600 mb-3' }, 'Save or load your complete master list'),
-      React.createElement(
-        'div',
-        { className: 'flex gap-2 mb-3' },
-        React.createElement(
-          'button',
-          {
-            onClick: exportData,
-            className: 'flex-1 bg-green-500 text-white py-2 rounded font-semibold hover:bg-green-600 flex items-center justify-center gap-2',
-          },
-          React.createElement(Download, { className: 'w-5 h-5' }),
-          'Export List'
-        ),
-        React.createElement(
-          'label',
-          { className: 'flex-1 bg-blue-500 text-white py-2 rounded font-semibold hover:bg-blue-600 flex items-center justify-center gap-2 cursor-pointer' },
-          React.createElement(Upload, { className: 'w-5 h-5' }),
-          'Import List',
-          React.createElement('input', {
-            type: 'file',
-            accept: '.json',
-            onChange: importData,
-            className: 'hidden',
-          })
-        )
-      )
-    ),
+      {/* Export/Import Master List */}
+      <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+        <h3 className="font-bold text-lg mb-3">💾 Master List Backup</h3>
+        <p className="text-sm text-gray-600 mb-3">Save or load your complete master list</p>
+        <div className="flex gap-2 mb-3">
+          <button
+            onClick={exportData}
+            className="flex-1 bg-green-500 text-white py-2 rounded font-semibold hover:bg-green-600 flex items-center justify-center gap-2"
+          >
+            <Download className="w-5 h-5" />
+            Export List
+          </button>
+          <label className="flex-1 bg-blue-500 text-white py-2 rounded font-semibold hover:bg-blue-600 flex items-center justify-center gap-2 cursor-pointer">
+            <Upload className="w-5 h-5" />
+            Import List
+            <input
+              type="file"
+              accept=".json"
+              onChange={importData}
+              className="hidden"
+            />
+          </label>
+        </div>
+      </div>
 
-    // Blocked Parents (Child Protection)
-    React.createElement(
-      'div',
-      { className: 'bg-red-50 p-4 rounded-lg border border-red-200' },
-      React.createElement('h3', { className: 'font-bold text-lg mb-3' }, '🚫 Child Protection - Blocked Parents'),
-      React.createElement('p', { className: 'text-sm text-gray-600 mb-3' }, 'Block undesirable or banned parents from signing in'),
-      React.createElement(
-        'div',
-        { className: 'space-y-2 mb-3' },
-        React.createElement('input', {
-          type: 'tel',
-          placeholder: 'Parent phone to block',
-          value: blockedPhone,
-          onChange: (e) => setBlockedPhone(e.target.value),
-          className: 'w-full px-3 py-2 border rounded focus:outline-none focus:border-red-500',
-        }),
-        React.createElement('textarea', {
-          placeholder: 'Reason for blocking (optional)',
-          value: blockedReason,
-          onChange: (e) => setBlockedReason(e.target.value),
-          className: 'w-full px-3 py-2 border rounded focus:outline-none focus:border-red-500 h-16',
-        }),
-        React.createElement(
-          'button',
-          {
-            onClick: addBlockedParent,
-            className: 'w-full bg-red-500 text-white py-2 rounded font-semibold hover:bg-red-600',
-          },
-          'Block Parent'
-        )
-      ),
+      {/* Blocked Parents */}
+      <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+        <h3 className="font-bold text-lg mb-3">🚫 Child Protection - Blocked Parents</h3>
+        <p className="text-sm text-gray-600 mb-3">Block undesirable or banned parents from signing in</p>
+        <div className="space-y-2 mb-3">
+          <input
+            type="tel"
+            placeholder="Parent phone to block"
+            value={blockedPhone}
+            onChange={(e) => setBlockedPhone(e.target.value)}
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:border-red-500"
+          />
+          <textarea
+            placeholder="Reason for blocking (optional)"
+            value={blockedReason}
+            onChange={(e) => setBlockedReason(e.target.value)}
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:border-red-500 h-16"
+          />
+          <button
+            onClick={addBlockedParent}
+            className="w-full bg-red-500 text-white py-2 rounded font-semibold hover:bg-red-600"
+          >
+            Block Parent
+          </button>
+        </div>
 
-      blockedParents.length > 0 && React.createElement(
-        'div',
-        { className: 'space-y-2' },
-        React.createElement('p', { className: 'text-sm font-semibold text-gray-600 mb-2' }, `Blocked: ${blockedParents.length} parent(s)`),
-        blockedParents.map((blocked) =>
-          React.createElement(
-            'div',
-            {
-              key: blocked.id,
-              className: 'bg-white p-3 rounded border border-red-300 flex justify-between items-start',
-            },
-            React.createElement(
-              'div',
-              null,
-              React.createElement('p', { className: 'font-semibold text-red-600' }, blocked.phone),
-              React.createElement('p', { className: 'text-xs text-gray-600' }, blocked.reason),
-              React.createElement('p', { className: 'text-xs text-gray-500' }, blocked.blockedDate)
-            ),
-            React.createElement(
-              'button',
-              {
-                onClick: () => unblockParent(blocked.id),
-                className: 'text-green-500 hover:text-green-700 font-bold',
-              },
-              'Unblock'
-            )
-          )
-        )
-      )
-    ),
+        {blockedParents.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-sm font-semibold text-gray-600 mb-2">Blocked: {blockedParents.length} parent(s)</p>
+            {blockedParents.map((blocked) => (
+              <div
+                key={blocked.id}
+                className="bg-white p-3 rounded border border-red-300 flex justify-between items-start"
+              >
+                <div>
+                  <p className="font-semibold text-red-600">{blocked.phone}</p>
+                  <p className="text-xs text-gray-600">{blocked.reason}</p>
+                  <p className="text-xs text-gray-500">{blocked.blockedDate}</p>
+                </div>
+                <button
+                  onClick={() => unblockParent(blocked.id)}
+                  className="text-green-500 hover:text-green-700 font-bold"
+                >
+                  Unblock
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-    // Section Selector
-    React.createElement(
-      'div',
-      { className: 'bg-blue-50 p-4 rounded-lg border border-blue-200' },
-      React.createElement('h3', { className: 'font-bold text-lg mb-3' }, '🎯 Select Active Section/Night'),
-      React.createElement('p', { className: 'text-sm text-gray-600 mb-3' }, `Currently showing: ${currentSection}`),
-      React.createElement(
-        'div',
-        { className: 'flex flex-wrap gap-2 mb-3' },
-        allSections.map((section, i) =>
-          React.createElement(
-            'button',
-            {
-              key: i,
-              onClick: () => updateSection(section),
-              className: `px-4 py-2 rounded font-semibold ${currentSection === section ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-800 hover:bg-gray-400'}`,
-            },
-            section
-          )
-        )
-      ),
-      React.createElement(
-        'div',
-        { className: 'flex gap-2' },
-        React.createElement('input', {
-          type: 'text',
-          placeholder: 'New section name',
-          value: newSection,
-          onChange: (e) => setNewSection(e.target.value),
-          className: 'flex-1 px-3 py-2 border rounded focus:outline-none focus:border-blue-500',
-        }),
-        React.createElement(
-          'button',
-          {
-            onClick: addSection,
-            className: 'bg-green-500 text-white px-4 py-2 rounded font-semibold hover:bg-green-600',
-          },
-          'Add'
-        )
-      )
-    ),
+      {/* Section Selector */}
+      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+        <h3 className="font-bold text-lg mb-3">🎯 Select Active Section/Night</h3>
+        <p className="text-sm text-gray-600 mb-3">Currently showing: {currentSection}</p>
+        <div className="flex flex-wrap gap-2 mb-3">
+          {allSections.map((section, i) => (
+            <button
+              key={i}
+              onClick={() => updateSection(section)}
+              className={`px-4 py-2 rounded font-semibold ${
+                currentSection === section
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-300 text-gray-800 hover:bg-gray-400'
+              }`}
+            >
+              {section}
+            </button>
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="New section name"
+            value={newSection}
+            onChange={(e) => setNewSection(e.target.value)}
+            className="flex-1 px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
+          />
+          <button
+            onClick={addSection}
+            className="bg-green-500 text-white px-4 py-2 rounded font-semibold hover:bg-green-600"
+          >
+            Add
+          </button>
+        </div>
+      </div>
 
-    // Master Children List
-    React.createElement(
-      'div',
-      { className: 'border-t pt-6' },
-      React.createElement('h3', { className: 'font-bold text-lg mb-4' }, '👶 All Children (Master List)'),
-      
-      React.createElement(
-        'div',
-        { className: 'space-y-3 mb-4 bg-gray-50 p-4 rounded' },
-        React.createElement('p', { className: 'text-sm text-gray-600 font-semibold mb-2' }, editingChildId ? 'Update child:' : 'Add child to master list:'),
-        React.createElement('input', {
-          type: 'text',
-          placeholder: 'Child name',
-          value: childName,
-          onChange: (e) => setChildName(e.target.value),
-          className: 'w-full px-3 py-2 border rounded mb-2 focus:outline-none focus:border-blue-500',
-        }),
-        React.createElement('input', {
-          type: 'tel',
-          placeholder: 'Parent phone',
-          value: childPhone,
-          onChange: (e) => setChildPhone(e.target.value),
-          className: 'w-full px-3 py-2 border rounded mb-2 focus:outline-none focus:border-blue-500',
-        }),
-        React.createElement(
-          'select',
-          {
-            value: childSection,
-            onChange: (e) => setChildSection(e.target.value),
-            className: 'w-full px-3 py-2 border rounded mb-2 focus:outline-none focus:border-blue-500',
-          },
-          allSections.map((sec, i) => React.createElement('option', { key: i, value: sec }, sec))
-        ),
-        React.createElement(
-          'div',
-          { className: 'flex gap-2' },
-          React.createElement(
-            'button',
-            {
-              onClick: addChild,
-              className: `flex-1 ${editingChildId ? 'bg-blue-500 hover:bg-blue-600' : 'bg-green-500 hover:bg-green-600'} text-white py-2 rounded font-semibold flex items-center justify-center gap-2`,
-            },
-            React.createElement(editingChildId ? Edit2 : Plus, { className: 'w-5 h-5' }),
-            editingChildId ? 'Update Child' : 'Add Child'
-          ),
-          editingChildId && React.createElement(
-            'button',
-            {
-              onClick: cancelEdit,
-              className: 'flex-1 bg-gray-300 hover:bg-gray-400 text-black py-2 rounded font-semibold',
-            },
-            'Cancel'
-          )
-        )
-      ),
+      {/* Master Children List */}
+      <div className="border-t pt-6">
+        <h3 className="font-bold text-lg mb-4">👶 All Children (Master List)</h3>
+        
+        <div className="space-y-3 mb-4 bg-gray-50 p-4 rounded">
+          <p className="text-sm text-gray-600 font-semibold mb-2">
+            {editingChildId ? 'Update child:' : 'Add child to master list:'}
+          </p>
+          <input
+            type="text"
+            placeholder="Child name"
+            value={childName}
+            onChange={(e) => setChildName(e.target.value)}
+            className="w-full px-3 py-2 border rounded mb-2 focus:outline-none focus:border-blue-500"
+          />
+          <input
+            type="tel"
+            placeholder="Parent phone"
+            value={childPhone}
+            onChange={(e) => setChildPhone(e.target.value)}
+            className="w-full px-3 py-2 border rounded mb-2 focus:outline-none focus:border-blue-500"
+          />
+          <select
+            value={childSection}
+            onChange={(e) => setChildSection(e.target.value)}
+            className="w-full px-3 py-2 border rounded mb-2 focus:outline-none focus:border-blue-500"
+          >
+            {allSections.map((sec, i) => (
+              <option key={i} value={sec}>{sec}</option>
+            ))}
+          </select>
+          <div className="flex gap-2">
+            <button
+              onClick={addChild}
+              className={`flex-1 ${editingChildId ? 'bg-blue-500 hover:bg-blue-600' : 'bg-green-500 hover:bg-green-600'} text-white py-2 rounded font-semibold flex items-center justify-center gap-2`}
+            >
+              {editingChildId ? <Edit2 className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+              {editingChildId ? 'Update Child' : 'Add Child'}
+            </button>
+            {editingChildId && (
+              <button
+                onClick={cancelEdit}
+                className="flex-1 bg-gray-300 hover:bg-gray-400 text-black py-2 rounded font-semibold"
+              >
+                Cancel
+              </button>
+            )}
+          </div>
+        </div>
 
-      React.createElement('p', { className: 'text-sm font-semibold text-gray-600 mb-2' }, `Total: ${allChildren.length} children`),
-      allChildren.length > 0 && React.createElement(
-        'div',
-        { className: 'space-y-2 max-h-64 overflow-y-auto' },
-        allChildren.map((child) =>
-          React.createElement(
-            'div',
-            {
-              key: child.id,
-              className: `p-3 rounded border ${currentSection === child.section ? 'bg-blue-100 border-blue-300' : 'bg-gray-50 border-gray-300'}`,
-            },
-            React.createElement(
-              'div',
-              { className: 'flex justify-between items-start' },
-              React.createElement(
-                'div',
-                null,
-                React.createElement('p', { className: 'font-semibold' }, child.name),
-                React.createElement('p', { className: 'text-xs text-gray-600' }, `${child.phone} • ${child.section}`)
-              ),
-              React.createElement(
-                'div',
-                { className: 'flex gap-2' },
-                React.createElement(
-                  'button',
-                  {
-                    onClick: () => editChild(child),
-                    className: 'text-blue-500 hover:text-blue-700',
-                  },
-                  React.createElement(Edit2, { className: 'w-4 h-4' })
-                ),
-                React.createElement(
-                  'button',
-                  {
-                    onClick: () => deleteChild(child.id),
-                    className: 'text-red-500 hover:text-red-700',
-                  },
-                  React.createElement(X, { className: 'w-4 h-4' })
-                )
-              )
-            )
-          )
-        )
-      )
-    ),
+        <p className="text-sm font-semibold text-gray-600 mb-2">Total: {allChildren.length} children</p>
+        {allChildren.length > 0 && (
+          <div className="space-y-2 max-h-64 overflow-y-auto">
+            {allChildren.map((child) => (
+              <div
+                key={child.id}
+                className={`p-3 rounded border ${
+                  currentSection === child.section
+                    ? 'bg-blue-100 border-blue-300'
+                    : 'bg-gray-50 border-gray-300'
+                }`}
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-semibold">{child.name}</p>
+                    <p className="text-xs text-gray-600">{child.phone} • {child.section}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => editChild(child)}
+                      className="text-blue-500 hover:text-blue-700"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => deleteChild(child.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-    // Master Leaders List
-    React.createElement(
-      'div',
-      { className: 'border-t pt-6' },
-      React.createElement('h3', { className: 'font-bold text-lg mb-4' }, '👥 All Leaders (Master List)'),
-      
-      React.createElement(
-        'div',
-        { className: 'space-y-3 mb-4 bg-gray-50 p-4 rounded' },
-        React.createElement('p', { className: 'text-sm text-gray-600 font-semibold mb-2' }, editingLeaderId ? 'Update leader:' : 'Add leader to master list:'),
-        React.createElement('input', {
-          type: 'text',
-          placeholder: 'Leader full name',
-          value: leaderName,
-          onChange: (e) => setLeaderName(e.target.value),
-          className: 'w-full px-3 py-2 border rounded mb-2 focus:outline-none focus:border-blue-500',
-        }),
-        React.createElement('input', {
-          type: 'text',
-          placeholder: 'Scout name (Skipper, Leader, etc)',
-          value: leaderScoutName,
-          onChange: (e) => setLeaderScoutName(e.target.value),
-          className: 'w-full px-3 py-2 border rounded mb-2 focus:outline-none focus:border-blue-500',
-        }),
-        React.createElement(
-          'select',
-          {
-            value: leaderSection,
-            onChange: (e) => setLeaderSection(e.target.value),
-            className: 'w-full px-3 py-2 border rounded mb-2 focus:outline-none focus:border-blue-500',
-          },
-          allSections.map((sec, i) => React.createElement('option', { key: i, value: sec }, sec))
-        ),
-        React.createElement(
-          'div',
-          { className: 'flex gap-2' },
-          React.createElement(
-            'button',
-            {
-              onClick: addLeader,
-              className: `flex-1 ${editingLeaderId ? 'bg-blue-500 hover:bg-blue-600' : 'bg-green-500 hover:bg-green-600'} text-white py-2 rounded font-semibold flex items-center justify-center gap-2`,
-            },
-            React.createElement(editingLeaderId ? Edit2 : Plus, { className: 'w-5 h-5' }),
-            editingLeaderId ? 'Update Leader' : 'Add Leader'
-          ),
-          editingLeaderId && React.createElement(
-            'button',
-            {
-              onClick: cancelEdit,
-              className: 'flex-1 bg-gray-300 hover:bg-gray-400 text-black py-2 rounded font-semibold',
-            },
-            'Cancel'
-          )
-        )
-      ),
+      {/* Master Leaders List */}
+      <div className="border-t pt-6">
+        <h3 className="font-bold text-lg mb-4">👥 All Leaders (Master List)</h3>
+        
+        <div className="space-y-3 mb-4 bg-gray-50 p-4 rounded">
+          <p className="text-sm text-gray-600 font-semibold mb-2">
+            {editingLeaderId ? 'Update leader:' : 'Add leader to master list:'}
+          </p>
+          <input
+            type="text"
+            placeholder="Leader full name"
+            value={leaderName}
+            onChange={(e) => setLeaderName(e.target.value)}
+            className="w-full px-3 py-2 border rounded mb-2 focus:outline-none focus:border-blue-500"
+          />
+          <input
+            type="text"
+            placeholder="Scout name (Skipper, Leader, etc)"
+            value={leaderScoutName}
+            onChange={(e) => setLeaderScoutName(e.target.value)}
+            className="w-full px-3 py-2 border rounded mb-2 focus:outline-none focus:border-blue-500"
+          />
+          <select
+            value={leaderSection}
+            onChange={(e) => setLeaderSection(e.target.value)}
+            className="w-full px-3 py-2 border rounded mb-2 focus:outline-none focus:border-blue-500"
+          >
+            {allSections.map((sec, i) => (
+              <option key={i} value={sec}>{sec}</option>
+            ))}
+          </select>
+          <div className="flex gap-2">
+            <button
+              onClick={addLeader}
+              className={`flex-1 ${editingLeaderId ? 'bg-blue-500 hover:bg-blue-600' : 'bg-green-500 hover:bg-green-600'} text-white py-2 rounded font-semibold flex items-center justify-center gap-2`}
+            >
+              {editingLeaderId ? <Edit2 className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+              {editingLeaderId ? 'Update Leader' : 'Add Leader'}
+            </button>
+            {editingLeaderId && (
+              <button
+                onClick={cancelEdit}
+                className="flex-1 bg-gray-300 hover:bg-gray-400 text-black py-2 rounded font-semibold"
+              >
+                Cancel
+              </button>
+            )}
+          </div>
+        </div>
 
-      React.createElement('p', { className: 'text-sm font-semibold text-gray-600 mb-2' }, `Total: ${allLeaders.length} leaders`),
-      allLeaders.length > 0 && React.createElement(
-        'div',
-        { className: 'space-y-2 max-h-64 overflow-y-auto' },
-        allLeaders.map((leader) =>
-          React.createElement(
-            'div',
-            {
-              key: leader.id,
-              className: `p-3 rounded border ${currentSection === leader.section ? 'bg-blue-100 border-blue-300' : 'bg-gray-50 border-gray-300'}`,
-            },
-            React.createElement(
-              'div',
-              { className: 'flex justify-between items-start' },
-              React.createElement(
-                'div',
-                null,
-                React.createElement('p', { className: 'font-semibold' }, leader.name),
-                React.createElement('p', { className: 'text-xs text-gray-600' }, `${leader.scoutName} • ${leader.section}`)
-              ),
-              React.createElement(
-                'div',
-                { className: 'flex gap-2' },
-                React.createElement(
-                  'button',
-                  {
-                    onClick: () => editLeader(leader),
-                    className: 'text-blue-500 hover:text-blue-700',
-                  },
-                  React.createElement(Edit2, { className: 'w-4 h-4' })
-                ),
-                React.createElement(
-                  'button',
-                  {
-                    onClick: () => deleteLeader(leader.id),
-                    className: 'text-red-500 hover:text-red-700',
-                  },
-                  React.createElement(X, { className: 'w-4 h-4' })
-                )
-              )
-            )
-          )
-        )
-      )
-    ),
+        <p className="text-sm font-semibold text-gray-600 mb-2">Total: {allLeaders.length} leaders</p>
+        {allLeaders.length > 0 && (
+          <div className="space-y-2 max-h-64 overflow-y-auto">
+            {allLeaders.map((leader) => (
+              <div
+                key={leader.id}
+                className={`p-3 rounded border ${
+                  currentSection === leader.section
+                    ? 'bg-blue-100 border-blue-300'
+                    : 'bg-gray-50 border-gray-300'
+                }`}
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-semibold">{leader.name}</p>
+                    <p className="text-xs text-gray-600">{leader.scoutName} • {leader.section}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => editLeader(leader)}
+                      className="text-blue-500 hover:text-blue-700"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => deleteLeader(leader.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-    // Messages to Parents (Announcements Manager)
-    React.createElement(
-      'div',
-      { className: 'border-t pt-6' },
-      React.createElement(AnnouncementsManager, { data, setData })
-    ),
+      {/* Messages to Parents */}
+      <div className="border-t pt-6">
+        <AnnouncementsManager data={data} setData={setData} />
+      </div>
 
-    // CSV Import (Optional)
-    React.createElement(
-      'div',
-      { className: 'border-t pt-6' },
-      React.createElement('h3', { className: 'font-bold text-lg mb-4' }, '📥 Optional: Import CSV'),
-      React.createElement(CSVImport, {
-        onImportFamilies: (fams) => setData({ ...data, children: [...(data.children || []), ...fams.map(f => ({ ...f, id: Date.now() + Math.random(), section: currentSection }))] }),
-        onImportSchedule: (sched) => setData({ ...data, schedule: sched }),
-      })
-    )
+      {/* CSV Import */}
+      <div className="border-t pt-6">
+        <h3 className="font-bold text-lg mb-4">📥 Optional: Import CSV</h3>
+        <CSVImport
+          onImportFamilies={(fams) => setData({ 
+            ...data, 
+            children: [...(data.children || []), ...fams.map(f => ({ ...f, id: Date.now() + Math.random(), section: currentSection }))] 
+          })}
+          onImportSchedule={(sched) => setData({ ...data, schedule: sched })}
+        />
+      </div>
+    </div>
   );
 };
 

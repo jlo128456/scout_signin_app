@@ -37,155 +37,118 @@ const MasterListScreen = ({ data, onSelectChild }) => {
     return colors[section] || 'from-gray-500 to-gray-600';
   };
 
-  return React.createElement(
-    'div',
-    { className: 'bg-white p-6 space-y-6' },
+  return (
+    <div className="bg-white p-6 space-y-6">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 rounded-lg">
+        <p className="text-sm font-semibold">📋 Master List</p>
+        <h2 className="text-2xl font-bold">All Scouts Directory</h2>
+      </div>
 
-    // Header
-    React.createElement(
-      'div',
-      { className: 'bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 rounded-lg' },
-      React.createElement('p', { className: 'text-sm font-semibold' }, '📋 Master List'),
-      React.createElement('h2', { className: 'text-2xl font-bold' }, 'All Scouts Directory')
-    ),
-
-    // Section Filter
-    React.createElement(
-      'div',
-      { className: 'space-y-3' },
-      React.createElement('p', { className: 'font-semibold text-gray-700' }, 'Filter by Section:'),
-      React.createElement(
-        'div',
-        { className: 'flex flex-wrap gap-2' },
-        sections.map(section =>
-          React.createElement(
-            'button',
-            {
-              key: section,
-              onClick: () => setFilterSection(section),
-              className: `px-4 py-2 rounded-lg font-semibold transition ${
+      {/* Section Filter */}
+      <div className="space-y-3">
+        <p className="font-semibold text-gray-700">Filter by Section:</p>
+        <div className="flex flex-wrap gap-2">
+          {sections.map(section => (
+            <button
+              key={section}
+              onClick={() => setFilterSection(section)}
+              className={`px-4 py-2 rounded-lg font-semibold transition ${
                 filterSection === section
                   ? 'bg-purple-600 text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`
-            },
-            section
-          )
-        )
-      )
-    ),
+              }`}
+            >
+              {section}
+            </button>
+          ))}
+        </div>
+      </div>
 
-    // Scout Grid
-    React.createElement(
-      'div',
-      { className: 'grid grid-cols-1 md:grid-cols-2 gap-3' },
-      scouts.map(scout =>
-        React.createElement(
-          'button',
-          {
-            key: scout.number,
-            onClick: () => setSelectedNumber(scout.number),
-            className: `p-4 border-2 rounded-lg text-left transition transform hover:scale-105 ${
+      {/* Scout Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {scouts.map(scout => (
+          <button
+            key={scout.number}
+            onClick={() => setSelectedNumber(scout.number)}
+            className={`p-4 border-2 rounded-lg text-left transition transform hover:scale-105 ${
               selectedNumber === scout.number
                 ? 'border-purple-500 bg-purple-50 shadow-lg'
                 : `${getSectionColor(scout.section)} border-opacity-50 hover:border-opacity-100`
-            }`
-          },
-          React.createElement(
-            'div',
-            { className: 'flex items-start justify-between' },
-            React.createElement(
-              'div',
-              { className: 'flex-1' },
-              React.createElement('div', { className: 'text-3xl font-bold text-purple-600' }, scout.number),
-              React.createElement('p', { className: 'font-bold text-gray-800 mt-1' }, scout.name),
-              React.createElement(
-                'div',
-                { className: 'flex items-center gap-1 text-xs text-gray-600 mt-2' },
-                React.createElement(MapPin, { className: 'w-3 h-3' }),
-                scout.section
-              )
-            ),
-            React.createElement(
-              'div',
-              { className: `px-3 py-1 rounded-full text-white text-xs font-bold bg-gradient-to-r ${getSectionBgColor(scout.section)}` },
-              scout.section[0]
-            )
-          )
-        )
-      )
-    ),
+            }`}
+          >
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="text-3xl font-bold text-purple-600">{scout.number}</div>
+                <p className="font-bold text-gray-800 mt-1">{scout.name}</p>
+                <div className="flex items-center gap-1 text-xs text-gray-600 mt-2">
+                  <MapPin className="w-3 h-3" />
+                  {scout.section}
+                </div>
+              </div>
+              <div className={`px-3 py-1 rounded-full text-white text-xs font-bold bg-gradient-to-r ${getSectionBgColor(scout.section)}`}>
+                {scout.section[0]}
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
 
-    // Selected Scout Details
-    selectedScout && React.createElement(
-      'div',
-      { className: `border-2 border-purple-300 bg-gradient-to-r ${getSectionBgColor(selectedScout.section)} rounded-lg p-6 text-white` },
-      React.createElement(
-        'div',
-        { className: 'space-y-4' },
-        React.createElement(
-          'div',
-          null,
-          React.createElement('p', { className: 'text-sm opacity-90' }, 'Scout Number'),
-          React.createElement('h3', { className: 'text-4xl font-bold' }, selectedScout.number)
-        ),
+      {/* Selected Scout Details */}
+      {selectedScout && (
+        <div className={`border-2 border-purple-300 bg-gradient-to-r ${getSectionBgColor(selectedScout.section)} rounded-lg p-6 text-white`}>
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm opacity-90">Scout Number</p>
+              <h3 className="text-4xl font-bold">{selectedScout.number}</h3>
+            </div>
 
-        React.createElement(
-          'div',
-          null,
-          React.createElement('p', { className: 'text-sm opacity-90' }, 'Name'),
-          React.createElement('p', { className: 'text-xl font-bold' }, selectedScout.name)
-        ),
+            <div>
+              <p className="text-sm opacity-90">Name</p>
+              <p className="text-xl font-bold">{selectedScout.name}</p>
+            </div>
 
-        React.createElement(
-          'div',
-          { className: 'flex items-center gap-2' },
-          React.createElement(MapPin, { className: 'w-5 h-5' }),
-          React.createElement('p', { className: 'text-lg font-semibold' }, selectedScout.section)
-        ),
+            <div className="flex items-center gap-2">
+              <MapPin className="w-5 h-5" />
+              <p className="text-lg font-semibold">{selectedScout.section}</p>
+            </div>
 
-        React.createElement(
-          'div',
-          { className: 'flex items-center gap-2' },
-          React.createElement(Phone, { className: 'w-5 h-5' }),
-          React.createElement('p', { className: 'text-lg font-mono' }, selectedScout.phone)
-        ),
+            <div className="flex items-center gap-2">
+              <Phone className="w-5 h-5" />
+              <p className="text-lg font-mono">{selectedScout.phone}</p>
+            </div>
 
-        React.createElement(
-          'button',
-          {
-            onClick: () => {
-              if (onSelectChild) {
-                const child = data.children.find(c => c.id === selectedScout.childId);
-                if (child) {
-                  onSelectChild(child);
+            <button
+              onClick={() => {
+                if (onSelectChild) {
+                  const child = data.children.find(c => c.id === selectedScout.childId);
+                  if (child) {
+                    onSelectChild(child);
+                  }
                 }
-              }
-            },
-            className: 'w-full bg-white text-purple-600 font-bold py-3 rounded-lg hover:bg-opacity-90 transition mt-4'
-          },
-          '👉 Quick Sign-In This Scout'
-        )
-      )
-    ),
+              }}
+              className="w-full bg-white text-purple-600 font-bold py-3 rounded-lg hover:bg-opacity-90 transition mt-4"
+            >
+              👉 Quick Sign-In This Scout
+            </button>
+          </div>
+        </div>
+      )}
 
-    // Info Box
-    React.createElement(
-      'div',
-      { className: 'bg-blue-50 border-2 border-blue-300 p-4 rounded-lg' },
-      React.createElement('p', { className: 'text-sm text-gray-700' },
-        '💡 Click a scout number above to view details, then use "Quick Sign-In" to jump to the Sign-In tab with that scout selected.'
-      )
-    ),
+      {/* Info Box */}
+      <div className="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg">
+        <p className="text-sm text-gray-700">
+          💡 Click a scout number above to view details, then use "Quick Sign-In" to jump to the Sign-In tab with that scout selected.
+        </p>
+      </div>
 
-    // Summary
-    React.createElement(
-      'div',
-      { className: 'bg-gray-50 p-4 rounded-lg text-center' },
-      React.createElement('p', { className: 'text-gray-600' },
-        `Showing ${scouts.length} scout${scouts.length !== 1 ? 's' : ''} ${filterSection !== 'All' ? `in ${filterSection}` : ''}`
-      )
-    )
+      {/* Summary */}
+      <div className="bg-gray-50 p-4 rounded-lg text-center">
+        <p className="text-gray-600">
+          Showing {scouts.length} scout{scouts.length !== 1 ? 's' : ''} {filterSection !== 'All' ? `in ${filterSection}` : ''}
+        </p>
+      </div>
+    </div>
   );
 };
 
