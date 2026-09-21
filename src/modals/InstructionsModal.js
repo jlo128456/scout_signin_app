@@ -1,195 +1,390 @@
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
 
-const InstructionsModal = ({ isOpen, onClose }) => {
+const InstructionsModal = ({ onClose }) => {
   const [isMinimized, setIsMinimized] = useState(false);
 
-  if (!isOpen) return null;
+  if (!onClose) return null; // Don't render if not open
 
-  return React.createElement(
-    'div',
-    { 
-      // CENTERED MODAL - overlay with center positioning
-      className: 'fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4'
-    },
-    
-    // Modal Box - Centered
-    React.createElement(
-      'div',
-      { className: 'bg-white rounded-lg shadow-2xl w-full max-w-2xl h-[90vh] flex flex-col' },
-      
-      // Header - SOLID
-      React.createElement(
-        'div',
-        { className: 'bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 flex-shrink-0 flex justify-between items-center rounded-t-lg' },
-        React.createElement('h2', { className: 'text-2xl font-bold' }, '📋 Instructions'),
-        React.createElement(
-          'div',
-          { className: 'flex gap-2' },
-          React.createElement(
-            'button',
-            {
-              onClick: () => setIsMinimized(!isMinimized),
-              className: 'bg-blue-500 hover:bg-blue-400 text-white px-3 py-1 rounded text-sm font-bold'
-            },
-            isMinimized ? '↓ Expand' : '↑ Minimize'
-          ),
-          React.createElement(
-            'button',
-            {
-              onClick: onClose,
-              className: 'bg-red-500 hover:bg-red-600 text-white p-2 rounded'
-            },
-            React.createElement(X, { className: 'w-5 h-5' })
-          )
-        )
-      ),
+  return (
+    <>
+      {/* DARK BACKDROP - Blocks everything behind (z-40) */}
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          backdropFilter: 'blur(3px)',
+          zIndex: 40,
+          pointerEvents: 'auto',
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+      />
 
-      // Content - SCROLLABLE
-      !isMinimized && React.createElement(
-        'div',
-        { className: 'flex-1 overflow-y-auto bg-white p-6 space-y-6' },
-      
-      // Welcome Section
-      React.createElement(
-        'div',
-        null,
-        React.createElement('h3', { className: 'text-xl font-bold text-blue-600 mb-3' }, '👋 Welcome to Scout Sign-In Demo'),
-        React.createElement('p', { className: 'text-gray-700 leading-relaxed' }, 'This is a fully functional demo of the Scout Sign-In system. You can explore all features with demo data or add your own information.')
-      ),
+      {/* MODAL CONTENT - Centered in middle (z-50) */}
+      {!isMinimized && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 50,
+            pointerEvents: 'auto',
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: 'white',
+              borderRadius: '0.75rem',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
+              maxWidth: '600px',
+              width: '90vw',
+              maxHeight: '80vh',
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+            }}
+          >
+            {/* HEADER */}
+            <div
+              style={{
+                padding: '1.5rem',
+                borderBottom: '2px solid #e5e7eb',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                backgroundColor: '#f9fafb',
+                flexShrink: 0,
+              }}
+            >
+              <h2 style={{ margin: 0, color: '#111827', fontSize: '1.5rem', fontWeight: 700 }}>
+                📖 Tab Guide
+              </h2>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClose();
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '1.5rem',
+                  cursor: 'pointer',
+                  color: '#6b7280',
+                  padding: '0.25rem',
+                  lineHeight: '1',
+                  width: '2rem',
+                  height: '2rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                title="Close"
+              >
+                ✕
+              </button>
+            </div>
 
-      // How to Use
-      React.createElement(
-        'div',
-        null,
-        React.createElement('h3', { className: 'text-xl font-bold text-blue-600 mb-3' }, '🚀 How to Use'),
-        React.createElement('ol', { className: 'text-gray-700 space-y-2 list-decimal list-inside' },
-          React.createElement('li', null, 'Click on a scout from the Master List OR'),
-          React.createElement('li', null, 'Enter a parent\'s phone number to find their child'),
-          React.createElement('li', null, 'Click "Sign In" to record attendance'),
-          React.createElement('li', null, 'View the Log tab to see all sign-in records'),
-          React.createElement('li', null, 'Use Setup tab to add leaders, manage settings, and post announcements')
-        )
-      ),
+            {/* SCROLLABLE CONTENT */}
+            <div
+              style={{
+                overflowY: 'auto',
+                flex: 1,
+                padding: '1.5rem',
+                fontSize: '0.95rem',
+                lineHeight: '1.7',
+                color: '#374151',
+              }}
+            >
+              {/* SIGN-IN TAB */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ marginTop: 0, marginBottom: '0.5rem', color: '#111827', fontSize: '1.125rem', fontWeight: 700 }}>
+                  📱 Sign-In
+                </h3>
+                <p style={{ margin: '0.5rem 0' }}>
+                  Find children by phone and mark them as signed in or out
+                </p>
+                <ul style={{ margin: '0.5rem 0 0 1.5rem', paddingLeft: 0 }}>
+                  <li style={{ margin: '0.25rem 0' }}>Enter parent's phone number</li>
+                  <li style={{ margin: '0.25rem 0' }}>See all children for that parent</li>
+                  <li style={{ margin: '0.25rem 0' }}>Click child's card to toggle sign in/out</li>
+                  <li style={{ margin: '0.25rem 0' }}>Green = Signed In | Red = Not Here</li>
+                  <li style={{ margin: '0.25rem 0' }}>Changes save automatically</li>
+                </ul>
+              </div>
 
-      // Phone Numbers Section
-      React.createElement(
-        'div',
-        { className: 'bg-green-50 border-2 border-green-300 p-4 rounded-lg' },
-        React.createElement('h3', { className: 'text-lg font-bold text-green-600 mb-3' }, '📱 Parent Phone Numbers to Use'),
-        React.createElement('p', { className: 'text-gray-700 mb-3 text-sm' }, 'Use ANY of these phone numbers to find demo scouts:'),
-        React.createElement(
-          'div',
-          { className: 'space-y-2' },
-          React.createElement('p', { className: 'text-sm text-gray-700' }, '🟢 <strong>Joeys:</strong> 0412345601, 0412345602, 0412345603, 0412345604, 0412345605'),
-          React.createElement('p', { className: 'text-sm text-gray-700' }, '🔵 <strong>Cubs:</strong> 0412345606, 0412345607, 0412345608, 0412345609, 0412345610'),
-          React.createElement('p', { className: 'text-sm text-gray-700' }, '🟡 <strong>Scouts:</strong> 0412345611, 0412345612, 0412345613, 0412345614, 0412345615'),
-          React.createElement('p', { className: 'text-sm text-gray-700' }, '🔴 <strong>Venturers:</strong> 0412345616, 0412345617, 0412345618, 0412345619, 0412345620')
-        ),
-        React.createElement('p', { className: 'text-xs text-gray-500 mt-3' }, '✅ Just type the last 9 digits (e.g., "412345601")')
-      ),
+              {/* MASTER LIST TAB */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ marginTop: 0, marginBottom: '0.5rem', color: '#111827', fontSize: '1.125rem', fontWeight: 700 }}>
+                  📋 Master List
+                </h3>
+                <p style={{ margin: '0.5rem 0' }}>
+                  View all scouts numbered 1-20, click to quick sign-in
+                </p>
+                <ul style={{ margin: '0.5rem 0 0 1.5rem', paddingLeft: 0 }}>
+                  <li style={{ margin: '0.25rem 0' }}>Shows all scouts in order (1-20)</li>
+                  <li style={{ margin: '0.25rem 0' }}>Click any scout card to quick sign in</li>
+                  <li style={{ margin: '0.25rem 0' }}>Green = Signed In | Red = Not Here</li>
+                  <li style={{ margin: '0.25rem 0' }}>Perfect for fast check-ins</li>
+                  <li style={{ margin: '0.25rem 0' }}>No phone lookup needed</li>
+                </ul>
+              </div>
 
-      // Admin Section
-      React.createElement(
-        'div',
-        { className: 'bg-purple-50 border-2 border-purple-300 p-4 rounded-lg' },
-        React.createElement('h3', { className: 'text-lg font-bold text-purple-600 mb-2' }, '🔐 Admin Access'),
-        React.createElement('p', { className: 'text-gray-700 text-sm mb-2' }, 'To access the Admin section:'),
-        React.createElement('p', { className: 'text-gray-700 text-sm' }, '• PIN: <strong>1234</strong>'),
-        React.createElement('p', { className: 'text-gray-700 text-sm' }, '• Use in any tab to unlock admin features')
-      ),
+              {/* ROSTER TAB */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ marginTop: 0, marginBottom: '0.5rem', color: '#111827', fontSize: '1.125rem', fontWeight: 700 }}>
+                  👥 Roster
+                </h3>
+                <p style={{ margin: '0.5rem 0' }}>
+                  View scouts organized by section (Joeys, Cubs, Scouts, Venturers)
+                </p>
+                <ul style={{ margin: '0.5rem 0 0 1.5rem', paddingLeft: 0 }}>
+                  <li style={{ margin: '0.25rem 0' }}>Organized by age group/section</li>
+                  <li style={{ margin: '0.25rem 0' }}>See all scouts in your group</li>
+                  <li style={{ margin: '0.25rem 0' }}>Click to update individual sign-in status</li>
+                  <li style={{ margin: '0.25rem 0' }}>Shows current attendance status</li>
+                  <li style={{ margin: '0.25rem 0' }}>Easy section-by-section overview</li>
+                </ul>
+              </div>
 
-      // Features
-      React.createElement(
-        'div',
-        null,
-        React.createElement('h3', { className: 'text-lg font-bold text-blue-600 mb-3' }, '✨ Features'),
-        React.createElement('ul', { className: 'text-gray-700 space-y-2' },
-          React.createElement('li', null, '✅ Master List - View all scouts'),
-          React.createElement('li', null, '✅ Sign-In Screen - Mark attendance by phone'),
-          React.createElement('li', null, '✅ Roster - View scouts by section'),
-          React.createElement('li', null, '✅ Log - See all sign-in/out records'),
-          React.createElement('li', null, '✅ Export to Excel - Download attendance data'),
-          React.createElement('li', null, '✅ Announcements - Post messages for parents'),
-          React.createElement('li', null, '✅ Persistent Storage - Data saves automatically')
-        )
-      ),
+              {/* LOG TAB */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ marginTop: 0, marginBottom: '0.5rem', color: '#111827', fontSize: '1.125rem', fontWeight: 700 }}>
+                  📊 Log
+                </h3>
+                <p style={{ margin: '0.5rem 0' }}>
+                  View attendance history and export to Excel
+                </p>
+                <ul style={{ margin: '0.5rem 0 0 1.5rem', paddingLeft: 0 }}>
+                  <li style={{ margin: '0.25rem 0' }}>View all past attendance records</li>
+                  <li style={{ margin: '0.25rem 0' }}>See who attended each event</li>
+                  <li style={{ margin: '0.25rem 0' }}>Export button to save as Excel file</li>
+                  <li style={{ margin: '0.25rem 0' }}>Perfect for reporting and records</li>
+                  <li style={{ margin: '0.25rem 0' }}>Keep track of attendance history</li>
+                </ul>
+              </div>
 
-      // Messages Feature
-      React.createElement(
-        'div',
-        { className: 'bg-blue-50 border-2 border-blue-300 p-4 rounded-lg' },
-        React.createElement('h3', { className: 'text-lg font-bold text-blue-600 mb-2' }, '📢 Messages for Parents'),
-        React.createElement('p', { className: 'text-gray-700 text-sm mb-2' }, 'In the Setup tab, leaders can:'),
-        React.createElement('ul', { className: 'text-gray-700 text-sm space-y-1 ml-4' },
-          React.createElement('li', null, '• Write messages for entire sections'),
-          React.createElement('li', null, '• Send individual messages to specific children'),
-          React.createElement('li', null, '• Parents see them when they sign in their child')
-        )
-      ),
+              {/* SETUP TAB */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <h3 style={{ marginTop: 0, marginBottom: '0.5rem', color: '#111827', fontSize: '1.125rem', fontWeight: 700 }}>
+                  ⚙️ Setup
+                </h3>
+                <p style={{ margin: '0.5rem 0' }}>
+                  Add leaders, create announcements, manage admin settings
+                </p>
+                <ul style={{ margin: '0.5rem 0 0 1.5rem', paddingLeft: 0 }}>
+                  <li style={{ margin: '0.25rem 0' }}>Add leader profiles and contact info</li>
+                  <li style={{ margin: '0.25rem 0' }}>Create announcements for parents</li>
+                  <li style={{ margin: '0.25rem 0' }}>Manage admin PIN (1234 default)</li>
+                  <li style={{ margin: '0.25rem 0' }}>Configure app settings</li>
+                  <li style={{ margin: '0.25rem 0' }}>Admin only access</li>
+                </ul>
+              </div>
 
-      // Tips Section
-      React.createElement(
-        'div',
-        { className: 'bg-yellow-50 border-2 border-yellow-300 p-4 rounded-lg' },
-        React.createElement('h3', { className: 'text-lg font-bold text-yellow-600 mb-3' }, '💡 Tips'),
-        React.createElement('ul', { className: 'text-gray-700 space-y-2 text-sm' },
-          React.createElement('li', null, '💻 Best on desktop/tablet for full experience'),
-          React.createElement('li', null, '📱 Responsive design - works on mobile too'),
-          React.createElement('li', null, '💾 All data saves automatically'),
-          React.createElement('li', null, '🔄 Refresh page - data persists'),
-          React.createElement('li', null, '📊 Export feature requires data to exist')
-        )
-      ),
+              {/* HOW TO SIGN IN */}
+              <div style={{ 
+                marginTop: '1.5rem',
+                padding: '1rem',
+                backgroundColor: '#f0fdf4',
+                borderLeft: '4px solid #22c55e',
+                borderRadius: '0.375rem'
+              }}>
+                <h3 style={{ marginTop: 0, marginBottom: '0.75rem', color: '#166534', fontSize: '1rem', fontWeight: 700 }}>
+                  ✅ How to Sign In
+                </h3>
+                <ol style={{ margin: '0.5rem 0', paddingLeft: '1.5rem', color: '#333' }}>
+                  <li style={{ margin: '0.5rem 0' }}>Go to <strong>Sign-In</strong> tab</li>
+                  <li style={{ margin: '0.5rem 0' }}>Enter parent's last 9 digits of phone</li>
+                  <li style={{ margin: '0.5rem 0' }}>Select each child attending</li>
+                  <li style={{ margin: '0.5rem 0' }}>Card will turn green (Signed In)</li>
+                  <li style={{ margin: '0.5rem 0' }}>Done! Attendance is recorded</li>
+                </ol>
+              </div>
 
-      // Navigation Help
-      React.createElement(
-        'div',
-        null,
-        React.createElement('h3', { className: 'text-lg font-bold text-blue-600 mb-3' }, '🗂️ Tab Guide'),
-        React.createElement('div', { className: 'space-y-3' },
-          React.createElement(
-            'div',
-            { className: 'border-l-4 border-blue-500 pl-3' },
-            React.createElement('h4', { className: 'font-bold text-gray-800' }, '📱 Sign-In'),
-            React.createElement('p', { className: 'text-sm text-gray-700' }, 'Find children by phone and mark them as signed in or out')
-          ),
-          React.createElement(
-            'div',
-            { className: 'border-l-4 border-green-500 pl-3' },
-            React.createElement('h4', { className: 'font-bold text-gray-800' }, '📋 Master List'),
-            React.createElement('p', { className: 'text-sm text-gray-700' }, 'View all scouts numbered 1-20, click to quick sign-in')
-          ),
-          React.createElement(
-            'div',
-            { className: 'border-l-4 border-purple-500 pl-3' },
-            React.createElement('h4', { className: 'font-bold text-gray-800' }, '👥 Roster'),
-            React.createElement('p', { className: 'text-sm text-gray-700' }, 'View scouts organized by section (Joeys, Cubs, Scouts, Venturers)')
-          ),
-          React.createElement(
-            'div',
-            { className: 'border-l-4 border-yellow-500 pl-3' },
-            React.createElement('h4', { className: 'font-bold text-gray-800' }, '📊 Log'),
-            React.createElement('p', { className: 'text-sm text-gray-700' }, 'View attendance history and export to Excel')
-          ),
-          React.createElement(
-            'div',
-            { className: 'border-l-4 border-red-500 pl-3' },
-            React.createElement('h4', { className: 'font-bold text-gray-800' }, '⚙️ Setup'),
-            React.createElement('p', { className: 'text-sm text-gray-700' }, 'Add leaders, create announcements, manage admin settings')
-          )
-        )
-      ),
+              {/* PHONE NUMBERS SECTION */}
+              <div style={{ 
+                marginTop: '1.5rem',
+                padding: '1rem',
+                backgroundColor: '#fef3c7',
+                borderLeft: '4px solid #eab308',
+                borderRadius: '0.375rem'
+              }}>
+                <h3 style={{ marginTop: 0, marginBottom: '0.75rem', color: '#92400e', fontSize: '1rem', fontWeight: 700 }}>
+                  ☎️ Contact Numbers
+                </h3>
+                
+                <div style={{ marginBottom: '0.75rem' }}>
+                  <p style={{ margin: '0.5rem 0', fontWeight: 600 }}>🟡 Scouts:</p>
+                  <p style={{ margin: '0.25rem 0 0 1rem', fontFamily: 'monospace', color: '#333', fontSize: '0.9rem' }}>
+                    0412345611, 0412345612, 0412345613, 0412345614, 0412345615
+                  </p>
+                </div>
 
-      // Getting Help
-      React.createElement(
-        'div',
-        { className: 'bg-gray-50 border-2 border-gray-300 p-4 rounded-lg' },
-        React.createElement('h3', { className: 'text-lg font-bold text-gray-600 mb-2' }, '❓ Need Help?'),
-        React.createElement('p', { className: 'text-gray-700 text-sm' }, 'This instructions panel is always available. Click the minimize button to collapse it, or close it and click "Show Instructions" anytime.')
-      )
-    )
-    )
+                <div style={{ marginBottom: '0.75rem' }}>
+                  <p style={{ margin: '0.5rem 0', fontWeight: 600 }}>🔴 Venturers:</p>
+                  <p style={{ margin: '0.25rem 0 0 1rem', fontFamily: 'monospace', color: '#333', fontSize: '0.9rem' }}>
+                    0412345616, 0412345617, 0412345618, 0412345619, 0412345620
+                  </p>
+                </div>
+
+                <div style={{ 
+                  marginTop: '0.75rem',
+                  padding: '0.75rem',
+                  backgroundColor: '#dcfce7',
+                  borderRadius: '0.375rem',
+                  fontSize: '0.85rem'
+                }}>
+                  <p style={{ margin: '0 0 0.5rem 0', fontWeight: 600 }}>💡 Tip:</p>
+                  <p style={{ margin: 0 }}>Just type the last 9 digits (e.g., "412345601") - the system adds the "04" automatically</p>
+                </div>
+              </div>
+
+              {/* ICONS GUIDE */}
+              <div style={{ 
+                marginTop: '1.5rem',
+                padding: '1rem',
+                backgroundColor: '#e0e7ff',
+                borderLeft: '4px solid #6366f1',
+                borderRadius: '0.375rem'
+              }}>
+                <h3 style={{ marginTop: 0, marginBottom: '0.75rem', color: '#3730a3', fontSize: '1rem', fontWeight: 700 }}>
+                  🎯 Status Icons
+                </h3>
+                <ul style={{ margin: '0.5rem 0', paddingLeft: '1.5rem', color: '#333' }}>
+                  <li style={{ margin: '0.25rem 0' }}>🟢 <strong>Green</strong> = Signed In (Present)</li>
+                  <li style={{ margin: '0.25rem 0' }}>🔴 <strong>Red</strong> = Not Here (Absent)</li>
+                  <li style={{ margin: '0.25rem 0' }}>⚪ <strong>White</strong> = Not checked yet</li>
+                </ul>
+              </div>
+
+              {/* FEATURES */}
+              <div style={{ 
+                marginTop: '1.5rem',
+                padding: '1rem',
+                backgroundColor: '#f3e8ff',
+                borderLeft: '4px solid #a855f7',
+                borderRadius: '0.375rem'
+              }}>
+                <h3 style={{ marginTop: 0, marginBottom: '0.75rem', color: '#6b21a8', fontSize: '1rem', fontWeight: 700 }}>
+                  ⭐ Key Features
+                </h3>
+                <ul style={{ margin: '0.5rem 0', paddingLeft: '1.5rem', color: '#333' }}>
+                  <li style={{ margin: '0.25rem 0' }}>✅ Real-time attendance tracking</li>
+                  <li style={{ margin: '0.25rem 0' }}>✅ One-tap sign in/out toggle</li>
+                  <li style={{ margin: '0.25rem 0' }}>✅ Organized by section</li>
+                  <li style={{ margin: '0.25rem 0' }}>✅ Export to Excel for reports</li>
+                  <li style={{ margin: '0.25rem 0' }}>✅ Parent phone lookup</li>
+                  <li style={{ margin: '0.25rem 0' }}>✅ Quick master list view</li>
+                  <li style={{ margin: '0.25rem 0' }}>✅ Attendance history log</li>
+                </ul>
+              </div>
+
+              {/* HELP SECTION */}
+              <div style={{ 
+                marginTop: '1.5rem',
+                padding: '1rem',
+                backgroundColor: '#eff6ff',
+                borderLeft: '4px solid #3b82f6',
+                borderRadius: '0.375rem'
+              }}>
+                <h3 style={{ marginTop: 0, marginBottom: '0.5rem', color: '#1e40af', fontSize: '1rem', fontWeight: 700 }}>
+                  ❓ Need Help?
+                </h3>
+                <p style={{ margin: '0.5rem 0', fontSize: '0.9rem' }}>
+                  This instructions panel is always available. Click the minimize button to collapse it, or close it and click "Show Instructions" anytime.
+                </p>
+                <p style={{ margin: '0.5rem 0', fontSize: '0.9rem' }}>
+                  <strong>Pro Tip:</strong> Use the Master List tab for fastest check-ins. Use the Roster tab to see your group organized by section.
+                </p>
+              </div>
+            </div>
+
+            {/* FOOTER - BUTTONS */}
+            <div
+              style={{
+                padding: '1rem 1.5rem',
+                borderTop: '2px solid #e5e7eb',
+                display: 'flex',
+                gap: '1rem',
+                backgroundColor: '#f9fafb',
+                flexShrink: 0,
+              }}
+            >
+              <button
+                onClick={() => setIsMinimized(true)}
+                style={{
+                  flex: 1,
+                  padding: '0.75rem 1rem',
+                  backgroundColor: '#e5e7eb',
+                  color: '#111827',
+                  border: 'none',
+                  borderRadius: '0.625rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontSize: '0.95rem',
+                  transition: 'all 0.3s',
+                }}
+                onHover={(e) => e.target.style.backgroundColor = '#d1d5db'}
+              >
+                Minimize
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClose();
+                }}
+                style={{
+                  flex: 1,
+                  padding: '0.75rem 1rem',
+                  backgroundColor: '#ef4444',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '0.625rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontSize: '0.95rem',
+                  transition: 'all 0.3s',
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MINIMIZED BADGE - Small button when minimized (z-45) */}
+      {isMinimized && (
+        <button
+          onClick={() => setIsMinimized(false)}
+          style={{
+            position: 'fixed',
+            bottom: '2rem',
+            right: '2rem',
+            zIndex: 45,
+            width: '60px',
+            height: '60px',
+            borderRadius: '50%',
+            backgroundColor: '#3b82f6',
+            color: 'white',
+            border: 'none',
+            fontSize: '1.5rem',
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.3s',
+          }}
+          title="Show Instructions"
+        >
+          📖
+        </button>
+      )}
+    </>
   );
 };
 
