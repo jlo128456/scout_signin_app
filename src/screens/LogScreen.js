@@ -27,7 +27,8 @@ const LogScreen = ({ data }) => {
     const rows = [];
 
     Object.entries(data.attendance || {}).forEach(([childId, att]) => {
-      const child = data.children.find(c => c.id === childId);
+      // Use string comparison for ID match
+      const child = data.children.find(c => String(c.id) === String(childId));
       if (!child) return;
 
       const status = att.signedIn ? 'Signed In' : 'Not Here';
@@ -90,7 +91,8 @@ const LogScreen = ({ data }) => {
   const logs = [];
   
   Object.entries(data.attendance || {}).forEach(([childId, att]) => {
-    const child = data.children.find(c => c.id === childId);
+    // Use string comparison for ID match
+    const child = data.children.find(c => String(c.id) === String(childId));
     if (!child) return;
     
     if (att.signInTime) {
