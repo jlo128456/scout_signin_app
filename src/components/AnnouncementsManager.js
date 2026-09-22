@@ -46,6 +46,17 @@ const AnnouncementsManager = ({ data, setData }) => {
       return;
     }
 
+    // Find the selected child's name and phone for display
+    let childName = 'Unknown Child';
+    let childPhone = '';
+    if (formData.type === 'individual' && formData.targetChildId) {
+      const selectedChild = children.find(c => String(c.id) === String(formData.targetChildId));
+      if (selectedChild) {
+        childName = selectedChild.name;
+        childPhone = selectedChild.phone || '';
+      }
+    }
+
     const newAnnouncement = {
       id: Date.now(),
       title: formData.title,
@@ -54,6 +65,8 @@ const AnnouncementsManager = ({ data, setData }) => {
       targetSection: (formData.type || 'section') === 'section' ? formData.targetSection : null,
       targetGroup: (formData.type || 'section') === 'group' ? formData.targetGroup : null,
       targetChildId: (formData.type || 'section') === 'individual' ? formData.targetChildId : null,
+      childName: (formData.type || 'section') === 'individual' ? childName : null,
+      childPhone: (formData.type || 'section') === 'individual' ? childPhone : null,
       createdAt: new Date().toISOString(),
       createdBy: 'Leader'
     };
@@ -130,8 +143,22 @@ const AnnouncementsManager = ({ data, setData }) => {
     } else if (type === 'group') {
       return `For ${announcement.targetGroup}`;
     } else if (type === 'individual') {
-      const child = children.find(c => c.id === announcement.targetChildId);
-      return `For ${child?.name || 'Unknown Child'}`;
+      // Use stored childName and childPhone (most reliable)
+      if (announcement.childName && announcement.childPhone) {
+        return `For ${announcement.childName} (${announcement.childPhone})`;
+      }
+      if (announcement.childName) {
+        return `For ${announcement.childName}`;
+      }
+      // Fallback: try to find by name and phone match
+      const child = children.find(c => 
+        c.name === announcement.childName || 
+        c.phone === announcement.childPhone
+      );
+      if (child) {
+        return `For ${child.name} (${child.phone || 'No phone'})`;
+      }
+      return 'For Unknown Child';
     }
     return 'Announcement';
   };
