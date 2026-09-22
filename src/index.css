@@ -403,7 +403,7 @@ input::placeholder {
 
 /* ============ SCREEN FIT & OVERFLOW ============ */
 
-body, #root {
+body, html {
   overflow-x: hidden;
 }
 
@@ -413,21 +413,14 @@ body, #root {
   overflow-x: hidden;
 }
 
-/* Ensure content doesn't overflow */
-div[class*="max-w"] {
-  width: 100%;
-  overflow-x: hidden;
-}
+/* ============ RESPONSIVE ============ */
 
-/* Responsive padding to fit screen */
 @media (max-width: 1024px) {
   .max-w-5xl {
     max-width: 100%;
     padding: 0 1rem;
   }
 }
-
-/* ============ RESPONSIVE ============ */
 
 @media (max-width: 768px) {
   .md\:grid-cols-3 {
@@ -439,6 +432,12 @@ div[class*="max-w"] {
   }
 
   .max-w-5xl {
+    max-width: 100%;
+    padding: 0 0.75rem;
+  }
+
+  .max-w-4xl,
+  .max-w-2xl {
     max-width: 100%;
     padding: 0 0.75rem;
   }
@@ -462,22 +461,28 @@ div[class*="max-w"] {
     font-size: 0.95rem;
   }
 
-  .max-w-5xl, .max-w-4xl, .max-w-2xl {
+  .max-w-5xl, 
+  .max-w-4xl, 
+  .max-w-2xl {
     max-width: 100%;
     padding: 0 0.5rem;
   }
 
   .p-6 { padding: 0.75rem; }
   .p-4 { padding: 0.5rem; }
-  .mb-8 { margin-bottom: 1rem; }
-  .mb-6 { margin-bottom: 0.75rem; }
-  .mt-6 { margin-top: 0.75rem; }
-  .pt-6 { padding-top: 0.75rem; }
-  .pb-6 { padding-bottom: 0.75rem; }
+  
+  .mb-8 { margin-bottom: 1.25rem; }
+  .mb-6 { margin-bottom: 1rem; }
+  .mb-4 { margin-bottom: 0.75rem; }
+  
+  .mt-6 { margin-top: 1rem; }
+  
+  .pt-6 { padding-top: 1rem; }
+  .pb-6 { padding-bottom: 1rem; }
 
-  .gap-4 { gap: 0.5rem; }
-  .gap-3 { gap: 0.25rem; }
-  .gap-2 { gap: 0.125rem; }
+  .gap-4 { gap: 0.75rem; }
+  .gap-3 { gap: 0.5rem; }
+  .gap-2 { gap: 0.25rem; }
 
   .text-2xl { font-size: 1.25rem; }
   .text-xl { font-size: 1.125rem; }
