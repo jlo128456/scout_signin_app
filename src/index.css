@@ -391,6 +391,42 @@ input::placeholder {
   background: rgba(0, 0, 0, 0.5);
 }
 
+/* ============ POINTER EVENTS ============ */
+
+.pointer-events-none {
+  pointer-events: none !important;
+}
+
+.pointer-events-auto {
+  pointer-events: auto;
+}
+
+/* ============ SCREEN FIT & OVERFLOW ============ */
+
+body, #root {
+  overflow-x: hidden;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Ensure content doesn't overflow */
+div[class*="max-w"] {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Responsive padding to fit screen */
+@media (max-width: 1024px) {
+  .max-w-5xl {
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+}
+
 /* ============ RESPONSIVE ============ */
 
 @media (max-width: 768px) {
@@ -401,6 +437,14 @@ input::placeholder {
   .overflow-y-auto {
     max-height: 85vh;
   }
+
+  .max-w-5xl {
+    max-width: 100%;
+    padding: 0 0.75rem;
+  }
+
+  .p-6 { padding: 1rem; }
+  .p-4 { padding: 0.75rem; }
 }
 
 @media (max-width: 640px) {
@@ -417,6 +461,26 @@ input::placeholder {
     padding: 0.75rem 0.875rem;
     font-size: 0.95rem;
   }
+
+  .max-w-5xl, .max-w-4xl, .max-w-2xl {
+    max-width: 100%;
+    padding: 0 0.5rem;
+  }
+
+  .p-6 { padding: 0.75rem; }
+  .p-4 { padding: 0.5rem; }
+  .mb-8 { margin-bottom: 1rem; }
+  .mb-6 { margin-bottom: 0.75rem; }
+  .mt-6 { margin-top: 0.75rem; }
+  .pt-6 { padding-top: 0.75rem; }
+  .pb-6 { padding-bottom: 0.75rem; }
+
+  .gap-4 { gap: 0.5rem; }
+  .gap-3 { gap: 0.25rem; }
+  .gap-2 { gap: 0.125rem; }
+
+  .text-2xl { font-size: 1.25rem; }
+  .text-xl { font-size: 1.125rem; }
 }
 
 /* ============ ANIMATIONS ============ */
