@@ -182,7 +182,6 @@ const ScoutSignIn = () => {
 
           <button
             onClick={() => handleScreenChange('setup')}
-            disabled={isSetupLocked}
             title={isSetupLocked ? 'Admin PIN required' : ''}
             className={`px-4 py-2 rounded-lg flex items-center gap-2 font-semibold transition-colors ${
               screen === 'setup'
