@@ -7,6 +7,10 @@ const DisplayAnnouncementsForChild = ({ announcements, currentChild }) => {
   if (!currentChild) return null;
 
   const relevantAnnouncements = announcements.filter(announcement => {
+    // Show to ALL children
+    if (announcement.type === 'all') {
+      return true;
+    }
     if (announcement.type === 'individual') {
       // Use string comparison for ID match (child ID may be number or string)
       return String(announcement.targetChildId) === String(currentChild.id);

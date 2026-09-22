@@ -57,12 +57,18 @@ const AnnouncementsManager = ({ data, setData }) => {
       }
     }
 
+    // Ensure section has a value (only for section type)
+    let targetSection = null;
+    if (formData.type === 'section') {
+      targetSection = formData.targetSection || 'Joeys';
+    }
+
     const newAnnouncement = {
       id: Date.now(),
       title: formData.title,
       message: formData.message,
       type: formData.type || 'section',
-      targetSection: (formData.type || 'section') === 'section' ? formData.targetSection : null,
+      targetSection: targetSection,
       targetGroup: (formData.type || 'section') === 'group' ? formData.targetGroup : null,
       targetChildId: (formData.type || 'section') === 'individual' ? formData.targetChildId : null,
       childName: (formData.type || 'section') === 'individual' ? childName : null,
@@ -97,9 +103,9 @@ const AnnouncementsManager = ({ data, setData }) => {
       title: announcement.title,
       message: announcement.message,
       type: announcement.type,
-      targetSection: announcement.targetSection,
-      targetGroup: announcement.targetGroup,
-      targetChildId: announcement.targetChildId
+      targetSection: announcement.type === 'section' ? (announcement.targetSection || (data.currentSection || 'Joeys')) : '',
+      targetGroup: announcement.targetGroup || '',
+      targetChildId: announcement.targetChildId || ''
     });
     setEditingId(announcement.id);
     setShowForm(true);
@@ -116,6 +122,8 @@ const AnnouncementsManager = ({ data, setData }) => {
 
   const getTypeColor = (type) => {
     switch (type) {
+      case 'all':
+        return 'bg-yellow-50 border-yellow-300';
       case 'individual':
         return 'bg-purple-50 border-purple-300';
       case 'group':
@@ -127,6 +135,8 @@ const AnnouncementsManager = ({ data, setData }) => {
 
   const getTypeBadgeColor = (type) => {
     switch (type) {
+      case 'all':
+        return 'bg-yellow-600 text-white';
       case 'individual':
         return 'bg-purple-600 text-white';
       case 'group':
@@ -138,10 +148,14 @@ const AnnouncementsManager = ({ data, setData }) => {
 
   const getTargetInfo = (announcement) => {
     const type = announcement.type || 'section';
-    if (type === 'section') {
-      return `For ${announcement.targetSection} Section`;
+    if (type === 'all') {
+      return 'For All Sections (everyone)';
+    } else if (type === 'section') {
+      const section = announcement.targetSection || 'Unknown Section';
+      return `For ${section} Section`;
     } else if (type === 'group') {
-      return `For ${announcement.targetGroup}`;
+      const group = announcement.targetGroup || 'Unknown Group';
+      return `For ${group}`;
     } else if (type === 'individual') {
       // Use stored childName and childPhone (most reliable)
       if (announcement.childName && announcement.childPhone) {
@@ -215,9 +229,10 @@ const AnnouncementsManager = ({ data, setData }) => {
               <label className="block font-semibold mb-1">Who Should See This?</label>
               <select
                 value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value, targetChildId: '', targetGroup: '' })}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value, targetChildId: '', targetGroup: '', targetSection: '' })}
                 className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
               >
+                <option value="all">🌍 All Sections (everyone)</option>
                 <option value="section">📘 Entire Section (all kids in section)</option>
                 <option value="group">🟠 Specific Group (e.g., Cubs & Scouts)</option>
                 <option value="individual">💜 Individual Child (one child only)</option>
@@ -229,7 +244,7 @@ const AnnouncementsManager = ({ data, setData }) => {
               <div>
                 <label className="block font-semibold mb-1">Select Section</label>
                 <select
-                  value={formData.targetSection}
+                  value={formData.targetSection || 'Joeys'}
                   onChange={(e) => setFormData({ ...formData, targetSection: e.target.value })}
                   className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
                 >
@@ -237,6 +252,14 @@ const AnnouncementsManager = ({ data, setData }) => {
                     <option key={section} value={section}>{section}</option>
                   ))}
                 </select>
+              </div>
+            )}
+
+            {/* All Sections Info */}
+            {formData.type === 'all' && (
+              <div className="bg-blue-100 border-2 border-blue-500 p-3 rounded-lg">
+                <p className="font-semibold text-blue-700">✅ This message will go to ALL children in:</p>
+                <p className="text-blue-600">Joeys, Cubs, Scouts, and Venturers</p>
               </div>
             )}
 
@@ -345,7 +368,8 @@ const AnnouncementsManager = ({ data, setData }) => {
       <div className="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg mt-4">
         <h4 className="font-bold text-blue-600 mb-2">💡 Message Types:</h4>
         <ul className="text-sm text-gray-700 space-y-2">
-          <li>📘 Section: Show to ALL children in a section</li>
+          <li>🌍 All Sections: Show to EVERY child (Joeys, Cubs, Scouts, Venturers)</li>
+          <li>📘 Section: Show to ALL children in one section</li>
           <li>🟠 Group: Show to specific group (e.g., Cubs & Scouts)</li>
           <li>💜 Individual: Show to ONE child only</li>
           <li>💡 Parents only see messages for their child!</li>
