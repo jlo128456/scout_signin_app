@@ -36,7 +36,7 @@ const AnnouncementsManager = ({ data, setData }) => {
   const childrenInSection = children.filter(c => c.section === formData.targetSection);
 
   const handleAddAnnouncement = () => {
-    if (!formData.title.trim() || !formData.message.trim()) {
+    if (!formData?.title?.trim() || !formData?.message?.trim()) {
       alert('Please enter title and message');
       return;
     }
