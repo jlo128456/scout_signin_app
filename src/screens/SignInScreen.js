@@ -193,28 +193,28 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
   const latestAnnouncement = (data.announcements || []).slice(-1)[0];
 
   return (
-    <div className="bg-white p-6 space-y-6">
-      {/* Scout Logo Badge */}
-      <div className="text-center mb-6">
-        <span className="text-6xl">⛺</span>
-        <h1 className="text-3xl font-bold text-green-600 mt-2">Scout Sign-In</h1>
+    <div className="bg-white p-3 md:p-6 space-y-3 md:space-y-6">
+      {/* Scout Logo Badge - Smaller on mobile/tablet */}
+      <div className="text-center mb-2 md:mb-6">
+        <span className="text-4xl md:text-6xl">⛺</span>
+        <h1 className="text-xl md:text-3xl font-bold text-green-600 mt-1 md:mt-2">Scout Sign-In</h1>
       </div>
       
-      {/* Section Info */}
-      <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 rounded-lg">
-        <p className="text-sm font-semibold">Active Section</p>
-        <h2 className="text-2xl font-bold">{currentSection}</h2>
+      {/* Section Info - Compact on mobile */}
+      <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-2 md:p-4 rounded-lg">
+        <p className="text-xs md:text-sm font-semibold">Active Section</p>
+        <h2 className="text-lg md:text-2xl font-bold">{currentSection}</h2>
       </div>
 
-      {/* Leaders on duty */}
+      {/* Leaders on duty - Hide on small screens if possible, compact otherwise */}
       {onDutyLeaders.length > 0 && (
-        <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-lg shadow-lg">
-          <h3 className="font-bold text-lg mb-3">👥 Leaders on Duty</h3>
-          <div className="flex flex-wrap gap-3">
+        <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-3 md:p-6 rounded-lg shadow-lg">
+          <h3 className="font-bold text-sm md:text-lg mb-2 md:mb-3">👥 Leaders on Duty</h3>
+          <div className="flex flex-wrap gap-2 md:gap-3">
             {onDutyLeaders.map((leader, i) => (
               <div
                 key={i}
-                className="bg-white bg-opacity-20 px-4 py-2 rounded-full text-white font-semibold"
+                className="bg-white bg-opacity-20 px-2 md:px-4 py-1 md:py-2 rounded-full text-white text-xs md:text-sm font-semibold"
               >
                 {leader.name} ({leader.scoutName})
               </div>
@@ -225,42 +225,42 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
 
       {/* Message shown after signing in */}
       {showMessage && latestAnnouncement && (
-        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-lg shadow-lg">
-          <h3 className="font-bold text-lg mb-2">📢 Important Message</h3>
-          <p className="text-white font-semibold">{latestAnnouncement.title}</p>
-          <p className="text-white mt-2">{latestAnnouncement.message}</p>
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-3 md:p-6 rounded-lg shadow-lg">
+          <h3 className="font-bold text-sm md:text-lg mb-1 md:mb-2">📢 Important Message</h3>
+          <p className="text-white font-semibold text-sm md:text-base">{latestAnnouncement.title}</p>
+          <p className="text-white mt-1 md:mt-2 text-sm md:text-base">{latestAnnouncement.message}</p>
         </div>
       )}
 
       {/* Blocked warning */}
       {blockedWarning && (
-        <div className="bg-red-50 border-2 border-red-500 p-6 rounded-lg">
-          <div className="flex gap-3 items-start">
-            <AlertCircle className="w-8 h-8 text-red-600 flex-shrink-0 mt-1" />
+        <div className="bg-red-50 border-2 border-red-500 p-3 md:p-6 rounded-lg">
+          <div className="flex gap-2 md:gap-3 items-start">
+            <AlertCircle className="w-6 md:w-8 h-6 md:h-8 text-red-600 flex-shrink-0 mt-1" />
             <div>
-              <h3 className="font-bold text-lg text-red-600 mb-2">⛔ ACCESS DENIED</h3>
-              <p className="text-red-700 font-semibold">{blockedWarning}</p>
-              <p className="text-sm text-red-600 mt-2">This parent has been blocked from signing in children. Contact leadership.</p>
+              <h3 className="font-bold text-base md:text-lg text-red-600 mb-1 md:mb-2">⛔ ACCESS DENIED</h3>
+              <p className="text-red-700 font-semibold text-sm md:text-base">{blockedWarning}</p>
+              <p className="text-xs md:text-sm text-red-600 mt-1 md:mt-2">This parent has been blocked from signing in children. Contact leadership.</p>
             </div>
           </div>
         </div>
       )}
 
-      {/* Counters */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <div className="text-4xl font-bold text-green-600">{signedInCount}</div>
-          <p className="text-gray-600">signed in</p>
+      {/* Counters - Compact on mobile */}
+      <div className="flex justify-between items-center mb-2 md:mb-6 bg-gray-50 p-3 md:p-4 rounded-lg">
+        <div className="text-center">
+          <div className="text-2xl md:text-4xl font-bold text-green-600">{signedInCount}</div>
+          <p className="text-xs md:text-sm text-gray-600">signed in</p>
         </div>
-        <div>
-          <div className="text-4xl font-bold text-red-600">{notHereCount}</div>
-          <p className="text-gray-600">not here</p>
+        <div className="text-center">
+          <div className="text-2xl md:text-4xl font-bold text-red-600">{notHereCount}</div>
+          <p className="text-xs md:text-sm text-gray-600">not here</p>
         </div>
       </div>
 
-      {/* Phone lookup */}
-      <div className="bg-blue-50 p-6 rounded-lg space-y-4">
-        <h3 className="font-bold text-lg">📱 Find Child by Phone</h3>
+      {/* Phone lookup - PRIORITY SECTION */}
+      <div className="bg-blue-50 p-3 md:p-6 rounded-lg space-y-2 md:space-y-4 border-2 border-blue-300">
+        <h3 className="font-bold text-base md:text-lg">📱 Find Child by Phone</h3>
         <PhoneInputSection 
           phone={phone}
           onPhoneChange={setPhone}
@@ -272,39 +272,42 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
       <div>
         {!showAddChild ? (
           <button
+            type="button"
             onClick={() => setShowAddChild(true)}
-            className="w-full bg-purple-500 text-white py-3 rounded-lg font-bold hover:bg-purple-600 flex items-center justify-center gap-2"
+            className="w-full bg-purple-500 text-white py-2 md:py-3 rounded-lg font-bold hover:bg-purple-600 flex items-center justify-center gap-2 text-sm md:text-base"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 md:w-5 h-4 md:h-5" />
             Child Not Listed? Quick Add
           </button>
         ) : (
-          <div className="bg-purple-50 p-4 rounded-lg space-y-2">
-            <p className="text-sm text-gray-600 font-semibold mb-2">Add child to {currentSection}:</p>
+          <div className="bg-purple-50 p-3 md:p-4 rounded-lg space-y-2">
+            <p className="text-xs md:text-sm text-gray-600 font-semibold mb-2">Add child to {currentSection}:</p>
             <input
               type="text"
               placeholder="Child name"
               value={newChildName}
               onChange={(e) => setNewChildName(e.target.value)}
-              className="w-full px-3 py-2 border rounded mb-2 focus:outline-none focus:border-blue-500"
+              className="w-full px-2 md:px-3 py-1.5 md:py-2 text-sm border rounded mb-2 focus:outline-none focus:border-blue-500"
             />
             <input
               type="tel"
               placeholder="Parent phone"
               value={newChildPhone}
               onChange={(e) => setNewChildPhone(e.target.value)}
-              className="w-full px-3 py-2 border rounded mb-2 focus:outline-none focus:border-blue-500"
+              className="w-full px-2 md:px-3 py-1.5 md:py-2 text-sm border rounded mb-2 focus:outline-none focus:border-blue-500"
             />
             <div className="flex gap-2">
               <button
+                type="button"
                 onClick={addQuickChild}
-                className="flex-1 bg-green-500 text-white py-2 rounded font-semibold hover:bg-green-600"
+                className="flex-1 bg-green-500 text-white py-1.5 md:py-2 rounded font-semibold hover:bg-green-600 text-sm md:text-base"
               >
                 Add & Sign In
               </button>
               <button
+                type="button"
                 onClick={() => setShowAddChild(false)}
-                className="flex-1 bg-gray-300 text-black py-2 rounded font-semibold hover:bg-gray-400"
+                className="flex-1 bg-gray-300 text-black py-1.5 md:py-2 rounded font-semibold hover:bg-gray-400 text-sm md:text-base"
               >
                 Cancel
               </button>
@@ -318,16 +321,17 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
 
       {/* Show child if found */}
       {child && (
-        <div className={`p-6 rounded-lg border-2 ${isSignedIn ? 'bg-green-50 border-green-300' : 'bg-gray-50 border-gray-300'}`}>
-          <h4 className="font-bold text-2xl mb-2">{child.name}</h4>
-          <p className="text-gray-600 mb-1">{child.scoutName}</p>
-          <p className="text-sm text-gray-500 mb-4">{child.memberNumber}</p>
-          <p className={`text-sm mb-4 ${isSignedIn ? 'text-green-600 font-semibold' : 'text-gray-600'}`}>
+        <div className={`p-3 md:p-6 rounded-lg border-2 ${isSignedIn ? 'bg-green-50 border-green-300' : 'bg-gray-50 border-gray-300'}`}>
+          <h4 className="font-bold text-lg md:text-2xl mb-1 md:mb-2">{child.name}</h4>
+          <p className="text-xs md:text-sm text-gray-600 mb-1">{child.scoutName}</p>
+          <p className="text-xs text-gray-500 mb-2 md:mb-4">{child.memberNumber}</p>
+          <p className={`text-xs md:text-sm mb-2 md:mb-4 ${isSignedIn ? 'text-green-600 font-semibold' : 'text-gray-600'}`}>
             {isSignedIn ? `Signed in at ${att.signInTime}` : 'Not signed in yet'}
           </p>
           <button
+            type="button"
             onClick={toggleSignIn}
-            className={`w-full py-3 rounded-lg text-white font-bold text-lg ${
+            className={`w-full py-2 md:py-3 rounded-lg text-white font-bold text-base md:text-lg ${
               isSignedIn ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
             }`}
           >
@@ -338,15 +342,16 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
 
       {/* Guardian modal */}
       {showGuardianModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h3 className="text-xl font-bold mb-4">Choose Guardian</h3>
-            <div className="space-y-2 mb-4 max-h-48 overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white p-4 md:p-6 rounded-lg shadow-lg w-full max-w-96">
+            <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Choose Guardian</h3>
+            <div className="space-y-2 mb-3 md:mb-4 max-h-48 overflow-y-auto">
               {child.guardians.map((guardian, i) => (
                 <button
                   key={i}
+                  type="button"
                   onClick={() => setSelectedGuardian(guardian)}
-                  className={`w-full p-3 text-left border rounded ${
+                  className={`w-full p-2 md:p-3 text-left text-sm md:text-base border rounded ${
                     selectedGuardian === guardian
                       ? 'bg-blue-500 text-white border-blue-500'
                       : 'bg-gray-50 border-gray-300 hover:bg-gray-100'
@@ -358,17 +363,19 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
             </div>
             <div className="flex gap-2">
               <button
+                type="button"
                 onClick={handleSignOut}
-                className="flex-1 bg-green-500 text-white py-2 rounded font-semibold"
+                className="flex-1 bg-green-500 text-white py-1.5 md:py-2 rounded font-semibold text-sm md:text-base"
               >
                 Confirm
               </button>
               <button
+                type="button"
                 onClick={() => {
                   setShowGuardianModal(false);
                   setSelectedGuardian('');
                 }}
-                className="flex-1 bg-gray-300 text-black py-2 rounded font-semibold"
+                className="flex-1 bg-gray-300 text-black py-1.5 md:py-2 rounded font-semibold text-sm md:text-base"
               >
                 Cancel
               </button>
