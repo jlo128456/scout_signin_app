@@ -2,7 +2,7 @@ import React from 'react';
 import ScoutSignIn from './components/ScoutSignIn-Demo';
 
 function App() {
-  return React.createElement(ScoutSignIn);
+  return <ScoutSignIn />;
 }
 
 export default App;
