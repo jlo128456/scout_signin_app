@@ -23,7 +23,7 @@ const LogScreen = ({ data }) => {
   };
 
   const exportToExcel = () => {
-    const headers = ['Scout Name', 'Phone', 'Section', 'Status', 'Sign-In Time', 'Sign-Out Guardian', 'Date'];
+    const headers = ['Scout Name', 'Phone', 'Section', 'Sign-In Time', 'Sign-Out Time', 'Sign-Out Guardian', 'Date'];
     const rows = [];
 
     Object.entries(data.attendance || {}).forEach(([childId, att]) => {
@@ -31,8 +31,8 @@ const LogScreen = ({ data }) => {
       const child = data.children.find(c => String(c.id) === String(childId));
       if (!child) return;
 
-      const status = att.signedIn ? 'Signed In' : 'Not Here';
       const signInTime = att.signInTime || '-';
+      const signOutTime = att.signOutTime || '-';
       const signOutGuardian = att.signOutGuardian || '-';
       const date = new Date().toISOString().split('T')[0];
 
@@ -40,8 +40,8 @@ const LogScreen = ({ data }) => {
         child.name,
         child.phone || '-',
         child.section || '-',
-        status,
         signInTime,
+        signOutTime,
         signOutGuardian,
         date
       ]);

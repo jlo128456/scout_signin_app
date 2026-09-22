@@ -157,7 +157,12 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
       alert('Please select a guardian');
       return;
     }
-    const newAtt = { ...data.attendance[child.id], signedIn: false, signOutGuardian: selectedGuardian };
+    const newAtt = { 
+      ...data.attendance[child.id], 
+      signedIn: false, 
+      signOutGuardian: selectedGuardian,
+      signOutTime: new Date().toLocaleTimeString() 
+    };
     const newData = { ...data, attendance: { ...data.attendance, [child.id]: newAtt } };
     setData(newData);
     alert(`${child.name} signed out by ${selectedGuardian}`);
