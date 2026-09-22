@@ -8,10 +8,12 @@ const DisplayAnnouncementsForChild = ({ announcements, currentChild }) => {
 
   const relevantAnnouncements = announcements.filter(announcement => {
     if (announcement.type === 'individual') {
-      return announcement.targetChildId === currentChild.id;
+      // Use string comparison for ID match (child ID may be number or string)
+      return String(announcement.targetChildId) === String(currentChild.id);
     }
     if (announcement.type === 'section') {
-      return announcement.targetSection === currentChild.section;
+      // Use string comparison for section (case-sensitive but handle type differences)
+      return String(announcement.targetSection) === String(currentChild.section);
     }
     return false;
   });
@@ -204,7 +206,8 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
       {showMessage && latestAnnouncement && (
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-lg shadow-lg">
           <h3 className="font-bold text-lg mb-2">📢 Important Message</h3>
-          <p className="text-white">{latestAnnouncement.text}</p>
+          <p className="text-white font-semibold">{latestAnnouncement.title}</p>
+          <p className="text-white mt-2">{latestAnnouncement.message}</p>
         </div>
       )}
 
