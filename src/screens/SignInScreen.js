@@ -6,6 +6,18 @@ const DisplayAnnouncementsForChild = ({ announcements, currentChild }) => {
   if (!announcements || announcements.length === 0) return null;
   if (!currentChild) return null;
 
+  const getAnnouncementDate = (createdAt) => {
+    try {
+      const date = new Date(createdAt);
+      if (isNaN(date.getTime())) {
+        return 'Date not set';
+      }
+      return date.toLocaleString();
+    } catch (err) {
+      return 'Invalid date';
+    }
+  };
+
   const relevantAnnouncements = announcements.filter(announcement => {
     // Show to ALL children
     if (announcement.type === 'all') {
@@ -55,7 +67,7 @@ const DisplayAnnouncementsForChild = ({ announcements, currentChild }) => {
             <div className="flex-1">
               <h4 className="font-bold text-gray-800">{announcement.title}</h4>
               <p className="text-gray-700 text-sm whitespace-pre-wrap mt-1">{announcement.message}</p>
-              <p className="text-xs text-gray-500 mt-2">Posted: {new Date(announcement.createdAt).toLocaleString()}</p>
+              <p className="text-xs text-gray-500 mt-2">Posted: {getAnnouncementDate(announcement.createdAt)}</p>
             </div>
           </div>
         </div>

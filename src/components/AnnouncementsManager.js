@@ -17,7 +17,19 @@ const AnnouncementsManager = ({ data, setData }) => {
     const savedAnnouncements = localStorage.getItem('scout_announcements');
     if (savedAnnouncements) {
       try {
-        const parsed = JSON.parse(savedAnnouncements);
+        let parsed = JSON.parse(savedAnnouncements);
+        
+        // Fix old announcements that have null/undefined targetSection
+        parsed = parsed.map(ann => {
+          if (ann.type === 'section' && !ann.targetSection) {
+            return {
+              ...ann,
+              targetSection: data.currentSection || 'Joeys'
+            };
+          }
+          return ann;
+        });
+        
         setData({ ...data, announcements: parsed });
       } catch (err) {
         console.error('Failed to load announcements from storage:', err);
@@ -60,7 +72,9 @@ const AnnouncementsManager = ({ data, setData }) => {
     // Ensure section has a value (only for section type)
     let targetSection = null;
     if (formData.type === 'section') {
-      targetSection = formData.targetSection || 'Joeys';
+      targetSection = formData.targetSection && formData.targetSection.trim() 
+        ? formData.targetSection 
+        : (data.currentSection || 'Joeys');
     }
 
     const newAnnouncement = {
@@ -151,7 +165,12 @@ const AnnouncementsManager = ({ data, setData }) => {
     if (type === 'all') {
       return 'For All Sections (everyone)';
     } else if (type === 'section') {
-      const section = announcement.targetSection || 'Unknown Section';
+      // Debug: show what we're getting
+      const section = announcement.targetSection;
+      if (!section) {
+        console.warn('Missing targetSection:', announcement);
+        return 'For All Scouts';  // Safe fallback
+      }
       return `For ${section} Section`;
     } else if (type === 'group') {
       const group = announcement.targetGroup || 'Unknown Group';
@@ -177,16 +196,42 @@ const AnnouncementsManager = ({ data, setData }) => {
     return 'Announcement';
   };
 
+  const getAnnouncementDate = (createdAt) => {
+    try {
+      const date = new Date(createdAt);
+      if (isNaN(date.getTime())) {
+        return 'Date not set';
+      }
+      return date.toLocaleString();
+    } catch (err) {
+      return 'Invalid date';
+    }
+  };
+
   return (
     <div className="space-y-4">
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-bold text-blue-600">📢 Messages to Parents</h3>
         <button
+          type="button"
           onClick={() => {
-            setShowForm(!showForm);
-            setEditingId(null);
-            resetForm();
+            if (showForm) {
+              // Closing the form
+              resetForm();
+            } else {
+              // Opening the form
+              setShowForm(true);
+              setEditingId(null);
+              setFormData({
+                title: '',
+                message: '',
+                type: 'section',
+                targetSection: data.currentSection || 'Joeys',
+                targetGroup: '',
+                targetChildId: ''
+              });
+            }
           }}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 flex items-center gap-2"
         >
@@ -299,12 +344,14 @@ const AnnouncementsManager = ({ data, setData }) => {
             {/* Buttons */}
             <div className="flex gap-2">
               <button
+                type="button"
                 onClick={handleAddAnnouncement}
                 className="flex-1 bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700"
               >
                 {editingId ? 'Update Message' : 'Post Message'}
               </button>
               <button
+                type="button"
                 onClick={resetForm}
                 className="flex-1 bg-gray-400 text-white py-2 rounded-lg font-semibold hover:bg-gray-500"
               >
@@ -333,7 +380,7 @@ const AnnouncementsManager = ({ data, setData }) => {
                       {getTargetInfo(announcement)}
                     </span>
                     <span className="text-xs text-gray-500">
-                      Posted {new Date(announcement.createdAt).toLocaleString()}
+                      Posted {getAnnouncementDate(announcement.createdAt)}
                     </span>
                   </div>
                   <h4 className="font-bold text-lg mb-1">{announcement.title}</h4>
@@ -341,12 +388,14 @@ const AnnouncementsManager = ({ data, setData }) => {
                 </div>
                 <div className="flex gap-2 ml-2">
                   <button
+                    type="button"
                     onClick={() => handleEdit(announcement)}
                     className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleDelete(announcement.id)}
                     className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
                   >
