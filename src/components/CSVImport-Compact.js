@@ -68,27 +68,34 @@ const CSVImport = ({ onImportFamilies, onImportSchedule }) => {
     reader.readAsText(file);
   };
 
-  return React.createElement(
-    'div',
-    { className: 'bg-white p-6 rounded-lg shadow' },
-    React.createElement('h2', { className: 'text-2xl font-bold mb-4 flex items-center gap-2' }, React.createElement(Upload, { className: 'w-6 h-6' }), 'Import Data'),
-    React.createElement('p', { className: 'text-gray-600 mb-4' }, status),
-    React.createElement(
-      'div',
-      { className: 'space-y-4' },
-      React.createElement(
-        'div',
-        { className: 'p-4 bg-blue-50 rounded' },
-        React.createElement('label', { className: 'block font-semibold mb-2' }, '👨‍👩‍👧 Families CSV'),
-        React.createElement('input', { type: 'file', accept: '.csv', onChange: handleFamilies, className: 'w-full p-2 border rounded' })
-      ),
-      React.createElement(
-        'div',
-        { className: 'p-4 bg-green-50 rounded' },
-        React.createElement('label', { className: 'block font-semibold mb-2' }, '📅 Schedule CSV'),
-        React.createElement('input', { type: 'file', accept: '.csv', onChange: handleSchedule, className: 'w-full p-2 border rounded' })
-      )
-    )
+  return (
+    <div className="bg-white p-6 rounded-lg shadow">
+      <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+        <Upload className="w-6 h-6" />
+        Import Data
+      </h2>
+      <p className="text-gray-600 mb-4">{status}</p>
+      <div className="space-y-4">
+        <div className="p-4 bg-blue-50 rounded">
+          <label className="block font-semibold mb-2">👨‍👩‍👧 Families CSV</label>
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleFamilies}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+        <div className="p-4 bg-green-50 rounded">
+          <label className="block font-semibold mb-2">📅 Schedule CSV</label>
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleSchedule}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 

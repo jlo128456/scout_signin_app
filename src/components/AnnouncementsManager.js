@@ -7,13 +7,12 @@ const AnnouncementsManager = ({ data, setData }) => {
   const [formData, setFormData] = useState({
     title: '',
     message: '',
-    type: 'section', // 'section', 'group', 'individual'
+    type: 'section',
     targetSection: data.currentSection || 'Joeys',
-    targetGroup: '', // For group messages (e.g., "Cubs & Scouts")
-    targetChildId: '' // For individual messages
+    targetGroup: '',
+    targetChildId: ''
   });
 
-  // Load announcements from localStorage on mount
   useEffect(() => {
     const savedAnnouncements = localStorage.getItem('scout_announcements');
     if (savedAnnouncements) {
@@ -26,7 +25,6 @@ const AnnouncementsManager = ({ data, setData }) => {
     }
   }, []);
 
-  // Save announcements to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('scout_announcements', JSON.stringify(data.announcements || []));
   }, [data.announcements]);
@@ -35,7 +33,6 @@ const AnnouncementsManager = ({ data, setData }) => {
   const children = data.children || [];
   const sections = ['Joeys', 'Cubs', 'Scouts', 'Venturers'];
 
-  // Get children in current section
   const childrenInSection = children.filter(c => c.section === formData.targetSection);
 
   const handleAddAnnouncement = () => {
@@ -139,243 +136,195 @@ const AnnouncementsManager = ({ data, setData }) => {
     return 'Announcement';
   };
 
-  return React.createElement(
-    'div',
-    { className: 'space-y-4' },
-
-    // Header
-    React.createElement(
-      'div',
-      { className: 'flex justify-between items-center mb-4' },
-      React.createElement('h3', { className: 'text-xl font-bold text-blue-600' }, '📢 Messages to Parents'),
-      React.createElement(
-        'button',
-        {
-          onClick: () => {
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-xl font-bold text-blue-600">📢 Messages to Parents</h3>
+        <button
+          onClick={() => {
             setShowForm(!showForm);
             setEditingId(null);
             resetForm();
-          },
-          className: 'bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 flex items-center gap-2'
-        },
-        React.createElement(Plus, { className: 'w-5 h-5' }),
-        showForm ? 'Cancel' : 'Add Message'
-      )
-    ),
+          }}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 flex items-center gap-2"
+        >
+          <Plus className="w-5 h-5" />
+          {showForm ? 'Cancel' : 'Add Message'}
+        </button>
+      </div>
 
-    // Add/Edit Form
-    showForm && React.createElement(
-      'div',
-      { className: 'bg-gray-50 p-4 rounded-lg border-2 border-blue-300' },
-      React.createElement(
-        'div',
-        { className: 'space-y-3' },
-        
-        // Title
-        React.createElement(
-          'div',
-          null,
-          React.createElement('label', { className: 'block font-semibold mb-1' }, 'Message Title'),
-          React.createElement('input', {
-            type: 'text',
-            value: formData.title,
-            onChange: (e) => setFormData({ ...formData, title: e.target.value }),
-            placeholder: 'e.g., Special Announcement',
-            className: 'w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none'
-          })
-        ),
+      {/* Add/Edit Form */}
+      {showForm && (
+        <div className="bg-gray-50 p-4 rounded-lg border-2 border-blue-300">
+          <div className="space-y-3">
+            
+            {/* Title */}
+            <div>
+              <label className="block font-semibold mb-1">Message Title</label>
+              <input
+                type="text"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                placeholder="e.g., Special Announcement"
+                className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+              />
+            </div>
 
-        // Message
-        React.createElement(
-          'div',
-          null,
-          React.createElement('label', { className: 'block font-semibold mb-1' }, 'Message'),
-          React.createElement('textarea', {
-            value: formData.message,
-            onChange: (e) => setFormData({ ...formData, message: e.target.value }),
-            placeholder: 'Write your message here...',
-            rows: 4,
-            className: 'w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none'
-          })
-        ),
+            {/* Message */}
+            <div>
+              <label className="block font-semibold mb-1">Message</label>
+              <textarea
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                placeholder="Write your message here..."
+                rows={4}
+                className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+              />
+            </div>
 
-        // Target Type
-        React.createElement(
-          'div',
-          null,
-          React.createElement('label', { className: 'block font-semibold mb-1' }, 'Who Should See This?'),
-          React.createElement(
-            'select',
-            {
-              value: formData.type,
-              onChange: (e) => setFormData({ ...formData, type: e.target.value, targetChildId: '', targetGroup: '' }),
-              className: 'w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none'
-            },
-            React.createElement('option', { value: 'section' }, '📘 Entire Section (all kids in section)'),
-            React.createElement('option', { value: 'group' }, '🟠 Specific Group (e.g., Cubs & Scouts)'),
-            React.createElement('option', { value: 'individual' }, '💜 Individual Child (one child only)')
-          )
-        ),
+            {/* Target Type */}
+            <div>
+              <label className="block font-semibold mb-1">Who Should See This?</label>
+              <select
+                value={formData.type}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value, targetChildId: '', targetGroup: '' })}
+                className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+              >
+                <option value="section">📘 Entire Section (all kids in section)</option>
+                <option value="group">🟠 Specific Group (e.g., Cubs & Scouts)</option>
+                <option value="individual">💜 Individual Child (one child only)</option>
+              </select>
+            </div>
 
-        // Section Select (if type is 'section')
-        formData.type === 'section' && React.createElement(
-          'div',
-          null,
-          React.createElement('label', { className: 'block font-semibold mb-1' }, 'Select Section'),
-          React.createElement(
-            'select',
-            {
-              value: formData.targetSection,
-              onChange: (e) => setFormData({ ...formData, targetSection: e.target.value }),
-              className: 'w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none'
-            },
-            sections.map(section =>
-              React.createElement('option', { key: section, value: section }, section)
-            )
-          )
-        ),
+            {/* Section Select */}
+            {formData.type === 'section' && (
+              <div>
+                <label className="block font-semibold mb-1">Select Section</label>
+                <select
+                  value={formData.targetSection}
+                  onChange={(e) => setFormData({ ...formData, targetSection: e.target.value })}
+                  className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                >
+                  {sections.map(section => (
+                    <option key={section} value={section}>{section}</option>
+                  ))}
+                </select>
+              </div>
+            )}
 
-        // Group Input (if type is 'group')
-        formData.type === 'group' && React.createElement(
-          'div',
-          null,
-          React.createElement('label', { className: 'block font-semibold mb-1' }, 'Group Name'),
-          React.createElement('input', {
-            type: 'text',
-            value: formData.targetGroup,
-            onChange: (e) => setFormData({ ...formData, targetGroup: e.target.value }),
-            placeholder: 'e.g., Cubs & Scouts, Intermediate Group',
-            className: 'w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none'
-          })
-        ),
+            {/* Group Input */}
+            {formData.type === 'group' && (
+              <div>
+                <label className="block font-semibold mb-1">Group Name</label>
+                <input
+                  type="text"
+                  value={formData.targetGroup}
+                  onChange={(e) => setFormData({ ...formData, targetGroup: e.target.value })}
+                  placeholder="e.g., Cubs & Scouts, Intermediate Group"
+                  className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                />
+              </div>
+            )}
 
-        // Child Select (if type is 'individual')
-        formData.type === 'individual' && React.createElement(
-          'div',
-          null,
-          React.createElement('label', { className: 'block font-semibold mb-1' }, 'Select Child'),
-          React.createElement(
-            'select',
-            {
-              value: formData.targetChildId,
-              onChange: (e) => setFormData({ ...formData, targetChildId: e.target.value }),
-              className: 'w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none'
-            },
-            React.createElement('option', { value: '' }, '-- Select a child --'),
-            children.map(child =>
-              React.createElement('option', { key: child.id, value: child.id }, 
-                `${child.name} (${child.section})`)
-            )
-          )
-        ),
+            {/* Child Select */}
+            {formData.type === 'individual' && (
+              <div>
+                <label className="block font-semibold mb-1">Select Child</label>
+                <select
+                  value={formData.targetChildId}
+                  onChange={(e) => setFormData({ ...formData, targetChildId: e.target.value })}
+                  className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                >
+                  <option value="">-- Select a child --</option>
+                  {children.map(child => (
+                    <option key={child.id} value={child.id}>
+                      {child.name} ({child.section})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
-        // Buttons
-        React.createElement(
-          'div',
-          { className: 'flex gap-2' },
-          React.createElement(
-            'button',
-            {
-              onClick: handleAddAnnouncement,
-              className: 'flex-1 bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700'
-            },
-            editingId ? 'Update Message' : 'Post Message'
-          ),
-          React.createElement(
-            'button',
-            {
-              onClick: resetForm,
-              className: 'flex-1 bg-gray-400 text-white py-2 rounded-lg font-semibold hover:bg-gray-500'
-            },
-            'Cancel'
-          )
-        )
-      )
-    ),
+            {/* Buttons */}
+            <div className="flex gap-2">
+              <button
+                onClick={handleAddAnnouncement}
+                className="flex-1 bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700"
+              >
+                {editingId ? 'Update Message' : 'Post Message'}
+              </button>
+              <button
+                onClick={resetForm}
+                className="flex-1 bg-gray-400 text-white py-2 rounded-lg font-semibold hover:bg-gray-500"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-    // Announcements List
-    React.createElement(
-      'div',
-      { className: 'space-y-3' },
-      announcements.length > 0
-        ? announcements.map(announcement =>
-            React.createElement(
-              'div',
-              {
-                key: announcement.id,
-                className: `p-4 rounded-lg border-2 ${getTypeColor(announcement.type)}`
-              },
-              React.createElement(
-                'div',
-                { className: 'flex justify-between items-start mb-2' },
-                React.createElement(
-                  'div',
-                  { className: 'flex-1' },
-                  React.createElement(
-                    'div',
-                    { className: 'flex items-center gap-2 mb-1 flex-wrap' },
-                    React.createElement(
-                      'span',
-                      { className: `px-2 py-1 rounded text-sm font-bold ${getTypeBadgeColor(announcement.type)}` },
-                      (announcement.type || 'section').toUpperCase()
-                    ),
-                    React.createElement(
-                      'span',
-                      { className: 'text-sm font-semibold text-gray-700' },
-                      getTargetInfo(announcement)
-                    ),
-                    React.createElement(
-                      'span',
-                      { className: 'text-xs text-gray-500' },
-                      `Posted ${new Date(announcement.createdAt).toLocaleString()}`
-                    )
-                  ),
-                  React.createElement('h4', { className: 'font-bold text-lg mb-1' }, announcement.title),
-                  React.createElement('p', { className: 'text-gray-700 whitespace-pre-wrap' }, announcement.message)
-                ),
-                React.createElement(
-                  'div',
-                  { className: 'flex gap-2 ml-2' },
-                  React.createElement(
-                    'button',
-                    {
-                      onClick: () => handleEdit(announcement),
-                      className: 'bg-blue-500 text-white p-2 rounded hover:bg-blue-600'
-                    },
-                    React.createElement(Edit2, { className: 'w-4 h-4' })
-                  ),
-                  React.createElement(
-                    'button',
-                    {
-                      onClick: () => handleDelete(announcement.id),
-                      className: 'bg-red-500 text-white p-2 rounded hover:bg-red-600'
-                    },
-                    React.createElement(Trash2, { className: 'w-4 h-4' })
-                  )
-                )
-              )
-            )
-          )
-        : React.createElement(
-            'div',
-            { className: 'text-center py-8 text-gray-500' },
-            React.createElement('p', null, '📭 No messages yet'),
-            React.createElement('p', { className: 'text-sm' }, 'Click "Add Message" to create an announcement')
-          )
-    ),
+      {/* Announcements List */}
+      <div className="space-y-3">
+        {announcements.length > 0 ? (
+          announcements.map(announcement => (
+            <div
+              key={announcement.id}
+              className={`p-4 rounded-lg border-2 ${getTypeColor(announcement.type)}`}
+            >
+              <div className="flex justify-between items-start mb-2">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <span className={`px-2 py-1 rounded text-sm font-bold ${getTypeBadgeColor(announcement.type)}`}>
+                      {(announcement.type || 'section').toUpperCase()}
+                    </span>
+                    <span className="text-sm font-semibold text-gray-700">
+                      {getTargetInfo(announcement)}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      Posted {new Date(announcement.createdAt).toLocaleString()}
+                    </span>
+                  </div>
+                  <h4 className="font-bold text-lg mb-1">{announcement.title}</h4>
+                  <p className="text-gray-700 whitespace-pre-wrap">{announcement.message}</p>
+                </div>
+                <div className="flex gap-2 ml-2">
+                  <button
+                    onClick={() => handleEdit(announcement)}
+                    className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(announcement.id)}
+                    className="bg-red-500 text-white p-2 rounded hover:bg-red-600"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-8 text-gray-500">
+            <p>📭 No messages yet</p>
+            <p className="text-sm">Click "Add Message" to create an announcement</p>
+          </div>
+        )}
+      </div>
 
-    // Info box
-    React.createElement(
-      'div',
-      { className: 'bg-blue-50 border-2 border-blue-300 p-4 rounded-lg mt-4' },
-      React.createElement('h4', { className: 'font-bold text-blue-600 mb-2' }, '💡 Message Types:'),
-      React.createElement('ul', { className: 'text-sm text-gray-700 space-y-2' },
-        React.createElement('li', null, '📘 Section: Show to ALL children in a section'),
-        React.createElement('li', null, '🟠 Group: Show to specific group (e.g., Cubs & Scouts)'),
-        React.createElement('li', null, '💜 Individual: Show to ONE child only'),
-        React.createElement('li', null, '💡 Parents only see messages for their child!')
-      )
-    )
+      {/* Info box */}
+      <div className="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg mt-4">
+        <h4 className="font-bold text-blue-600 mb-2">💡 Message Types:</h4>
+        <ul className="text-sm text-gray-700 space-y-2">
+          <li>📘 Section: Show to ALL children in a section</li>
+          <li>🟠 Group: Show to specific group (e.g., Cubs & Scouts)</li>
+          <li>💜 Individual: Show to ONE child only</li>
+          <li>💡 Parents only see messages for their child!</li>
+        </ul>
+      </div>
+    </div>
   );
 };
 
