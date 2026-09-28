@@ -8,6 +8,35 @@ import MasterListScreen from '../screens/MasterListScreen';
 import InstructionsModal from '../modals/InstructionsModal';
 import { DEMO_DATA } from '../data/demoData';
 
+// ---------- Messages for everyone ----------
+// Shows any Setup announcement set to "All Sections (everyone)" at the top of the Sign-In tab
+const EveryoneAnnouncements = ({ announcements }) => {
+  const everyone = (announcements || []).filter((a) => a && a.type === 'all');
+  if (everyone.length === 0) return null;
+
+  return (
+    <div className="mb-4 space-y-2" style={{ position: 'relative', zIndex: 10 }}>
+      {everyone.map((a) => (
+        <div
+          key={a.id}
+          className="p-4 rounded-lg border-l-4 border-green-500 shadow"
+          style={{ backgroundColor: '#f0fdf4' }}
+        >
+          <h4 className="font-bold text-gray-800">🌍 {a.title || 'Message for everyone'}</h4>
+          {a.message && (
+            <p className="text-gray-700 text-sm whitespace-pre-wrap mt-1">{a.message}</p>
+          )}
+          {a.createdAt && !isNaN(new Date(a.createdAt)) && (
+            <p className="text-xs text-gray-500 mt-2">
+              Posted: {new Date(a.createdAt).toLocaleString()}
+            </p>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const ScoutSignIn = () => {
   const [screen, setScreen] = useState('signin');
   const [showInstructions, setShowInstructions] = useState(false);
@@ -189,6 +218,11 @@ const ScoutSignIn = () => {
             📋 Show Instructions
           </button>
         </div>
+
+        {/* Messages for everyone - shown at the top of the Sign-In tab */}
+        {screen === 'signin' && (
+          <EveryoneAnnouncements announcements={data.announcements} />
+        )}
 
         {/* Screen Content - Master List shows its lock card in the page until unlocked (same as Setup) */}
         {screen === 'masterlist' && !masterListUnlocked ? (
