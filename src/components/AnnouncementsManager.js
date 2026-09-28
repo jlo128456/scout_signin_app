@@ -1,7 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
 
-const AnnouncementsManager = ({ data, setData }) => {
+// Is this message meant for this child? (used for private/individual messages)
+const isForChild = (a, child) => {
+  if (!child) return false;
+  return (
+    String(a.targetChildId) === String(child.id) ||
+    (a.childPhone && child.phone && a.childPhone === child.phone)
+  );
+};
+
+const readSaved = () => {
+  try {
+    const saved = localStorage.getItem('scout_announcements');
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+};
+
+// mode="leader" (default) = the leader screen to add/edit/delete messages
+// mode="parent"           = read-only messages for the sign-in page
+//   child = the child found by phone (optional) - unlocks that child's private messages
+const AnnouncementsManager = ({ data = {}, setData, mode = 'leader', child = null }) => {
+  const isParent = mode === 'parent';
+  const [savedForParent, setSavedForParent] = useState(readSaved);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
@@ -13,12 +36,26 @@ const AnnouncementsManager = ({ data, setData }) => {
     targetChildId: ''
   });
 
+  // Parent view: pick up changes the leader makes in another tab
   useEffect(() => {
+    if (!isParent) return;
+    const onStorage = (e) => {
+      if (e.key === 'scout_announcements') setSavedForParent(readSaved());
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, [isParent]);
+
+  useEffect(() => {
+    if (isParent) return; // parent view never changes saved messages
     const savedAnnouncements = localStorage.getItem('scout_announcements');
     if (savedAnnouncements) {
       try {
         let parsed = JSON.parse(savedAnnouncements);
         
+        // Remove broken/empty messages (no title and no message)
+        parsed = parsed.filter(ann => ann && ((ann.title || '').trim() || (ann.message || '').trim()));
+
         // Fix old announcements that have null/undefined targetSection
         parsed = parsed.map(ann => {
           if (ann.type === 'section' && !ann.targetSection) {
@@ -38,14 +75,16 @@ const AnnouncementsManager = ({ data, setData }) => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('scout_announcements', JSON.stringify(data.announcements || []));
+    if (isParent) return;
+    if (data.announcements === undefined) return; // don't wipe storage before it has loaded
+    localStorage.setItem('scout_announcements', JSON.stringify(data.announcements));
   }, [data.announcements]);
 
-  const announcements = data.announcements || [];
+  const announcements = (data.announcements || []).filter(
+    a => a && ((a.title || '').trim() || (a.message || '').trim())
+  );
   const children = data.children || [];
   const sections = ['Joeys', 'Cubs', 'Scouts', 'Venturers'];
-
-  const childrenInSection = children.filter(c => c.section === formData.targetSection);
 
   const handleAddAnnouncement = () => {
     if (!formData?.title?.trim() || !formData?.message?.trim()) {
@@ -92,7 +131,7 @@ const AnnouncementsManager = ({ data, setData }) => {
     };
 
     const updatedAnnouncements = editingId
-      ? announcements.map(a => a.id === editingId ? { ...a, ...newAnnouncement, id: a.id } : a)
+      ? announcements.map(a => a.id === editingId ? { ...a, ...newAnnouncement, id: a.id, createdAt: a.createdAt || newAnnouncement.createdAt } : a)
       : [...announcements, newAnnouncement];
 
     setData({ ...data, announcements: updatedAnnouncements });
@@ -208,6 +247,45 @@ const AnnouncementsManager = ({ data, setData }) => {
     }
   };
 
+  // ---------- PARENT VIEW (sign-in page) ----------
+  if (isParent) {
+    const source = (data.announcements && data.announcements.length ? data.announcements : savedForParent)
+      .filter(a => a && ((a.title || '').trim() || (a.message || '').trim()));
+
+    // All / Section / Group = everyone sees. Individual = only that child's parent.
+    const visible = source
+      .filter(a => (a.type === 'individual' ? isForChild(a, child) : true))
+      .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+    if (visible.length === 0) return null;
+
+    return (
+      <div
+        className="border-2 rounded-lg p-2 space-y-2"
+        style={{ backgroundColor: '#fefce8', borderColor: '#fde047', flex: '1 1 auto', minHeight: 0, overflowY: 'auto' }}
+      >
+        <h3 className="font-bold text-sm">📢 Messages from Leaders</h3>
+        {visible.map(a => (
+          <div
+            key={a.id}
+            className="bg-white rounded-lg px-3 py-2 border"
+            style={{ borderColor: a.type === 'individual' ? '#a855f7' : '#fde68a' }}
+          >
+            <p className="text-xs font-semibold text-gray-500">
+              {a.type === 'all' && '🌍 Everyone'}
+              {(a.type === 'section' || !a.type) && `📘 ${a.targetSection || 'Section'}`}
+              {a.type === 'group' && `🟠 ${a.targetGroup || 'Group'}`}
+              {a.type === 'individual' && `💜 Just for ${a.childName || 'your child'}`}
+            </p>
+            <h4 className="font-bold text-sm">{a.title}</h4>
+            <p className="text-gray-700 text-sm whitespace-pre-wrap">{a.message}</p>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // ---------- LEADER VIEW ----------
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -274,7 +352,7 @@ const AnnouncementsManager = ({ data, setData }) => {
               <label className="block font-semibold mb-1">Who Should See This?</label>
               <select
                 value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value, targetChildId: '', targetGroup: '', targetSection: '' })}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value, targetChildId: '', targetGroup: '', targetSection: data.currentSection || 'Joeys' })}
                 className="w-full p-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
               >
                 <option value="all">🌍 All Sections (everyone)</option>
@@ -303,7 +381,7 @@ const AnnouncementsManager = ({ data, setData }) => {
             {/* All Sections Info */}
             {formData.type === 'all' && (
               <div className="bg-blue-100 border-2 border-blue-500 p-3 rounded-lg">
-                <p className="font-semibold text-blue-700">✅ This message will go to ALL children in:</p>
+                <p className="font-semibold text-blue-700">✅ Everyone will see this on the sign-in page</p>
                 <p className="text-blue-600">Joeys, Cubs, Scouts, and Venturers</p>
               </div>
             )}
@@ -325,6 +403,7 @@ const AnnouncementsManager = ({ data, setData }) => {
             {/* Child Select */}
             {formData.type === 'individual' && (
               <div>
+                <p className="text-sm text-purple-700 mb-2">🔒 Private: only this child's parent will see it, after they look up their phone number.</p>
                 <label className="block font-semibold mb-1">Select Child</label>
                 <select
                   value={formData.targetChildId}
@@ -373,8 +452,18 @@ const AnnouncementsManager = ({ data, setData }) => {
               <div className="flex justify-between items-start mb-2">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <span className={`px-2 py-1 rounded text-sm font-bold ${getTypeBadgeColor(announcement.type)}`}>
-                      {(announcement.type || 'section').toUpperCase()}
+                    <span
+                      className="px-2 py-1 rounded text-sm font-bold"
+                      style={{
+                        color: '#fff',
+                        backgroundColor: {
+                          all: '#ca8a04',
+                          individual: '#9333ea',
+                          group: '#ea580c'
+                        }[announcement.type] || '#2563eb'
+                      }}
+                    >
+                      {announcement.type === 'all' ? 'ALL' : (announcement.type || 'section').toUpperCase()}
                     </span>
                     <span className="text-sm font-semibold text-gray-700">
                       {getTargetInfo(announcement)}
@@ -417,11 +506,10 @@ const AnnouncementsManager = ({ data, setData }) => {
       <div className="bg-blue-50 border-2 border-blue-300 p-4 rounded-lg mt-4">
         <h4 className="font-bold text-blue-600 mb-2">💡 Message Types:</h4>
         <ul className="text-sm text-gray-700 space-y-2">
-          <li>🌍 All Sections: Show to EVERY child (Joeys, Cubs, Scouts, Venturers)</li>
-          <li>📘 Section: Show to ALL children in one section</li>
-          <li>🟠 Group: Show to specific group (e.g., Cubs & Scouts)</li>
-          <li>💜 Individual: Show to ONE child only</li>
-          <li>💡 Parents only see messages for their child!</li>
+          <li>🌍 All Sections: shown to everyone on the sign-in page</li>
+          <li>📘 Section: shown to everyone on the sign-in page, labelled with the section</li>
+          <li>🟠 Group: shown to everyone on the sign-in page, labelled with the group</li>
+          <li>💜 Individual: private - only shows after that child's parent finds them by phone</li>
         </ul>
       </div>
     </div>

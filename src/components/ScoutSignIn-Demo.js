@@ -8,35 +8,6 @@ import MasterListScreen from '../screens/MasterListScreen';
 import InstructionsModal from '../modals/InstructionsModal';
 import { DEMO_DATA } from '../data/demoData';
 
-// ---------- Messages for everyone ----------
-// Shows any Setup announcement set to "All Sections (everyone)" at the top of the Sign-In tab
-const EveryoneAnnouncements = ({ announcements }) => {
-  const everyone = (announcements || []).filter((a) => a && a.type === 'all');
-  if (everyone.length === 0) return null;
-
-  return (
-    <div className="mb-4 space-y-2" style={{ position: 'relative', zIndex: 10 }}>
-      {everyone.map((a) => (
-        <div
-          key={a.id}
-          className="p-4 rounded-lg border-l-4 border-green-500 shadow"
-          style={{ backgroundColor: '#f0fdf4' }}
-        >
-          <h4 className="font-bold text-gray-800">🌍 {a.title || 'Message for everyone'}</h4>
-          {a.message && (
-            <p className="text-gray-700 text-sm whitespace-pre-wrap mt-1">{a.message}</p>
-          )}
-          {a.createdAt && !isNaN(new Date(a.createdAt)) && (
-            <p className="text-xs text-gray-500 mt-2">
-              Posted: {new Date(a.createdAt).toLocaleString()}
-            </p>
-          )}
-        </div>
-      ))}
-    </div>
-  );
-};
-
 const ScoutSignIn = () => {
   const [screen, setScreen] = useState('signin');
   const [showInstructions, setShowInstructions] = useState(false);
@@ -181,7 +152,15 @@ const ScoutSignIn = () => {
   const ScreenComponent = getScreen();
 
   return (
-    <div className="min-h-screen bg-[rgb(5,46,22)]" style={{ width: '100vw', overflowX: 'hidden' }}>
+    <div
+      className="flex flex-col"
+      style={{
+        height: '100dvh',          // exactly the visible screen height (phones, tablets, desktop)
+        width: '100%',
+        overflow: 'hidden',
+        backgroundColor: 'rgb(5,46,22)'
+      }}
+    >
       {/* Instructions Modal */}
       <InstructionsModal
         isOpen={showInstructions}
@@ -196,34 +175,37 @@ const ScoutSignIn = () => {
         style={{ transform: 'rotate(-45deg)', opacity: 0.08 }}
       />
 
-      {/* Main Content */}
-      <div className="mx-auto p-4" style={{ maxWidth: '100%', paddingBottom: 'clamp(160px, 25vh, 240px)' }}>
-        {/* Header */}
-        <div className="text-center mb-4 pt-3">
+      {/* Header - one compact row */}
+      <div
+        className="flex items-center justify-between gap-2 px-3 py-2"
+        style={{ flexShrink: 0, position: 'relative', zIndex: 10, paddingTop: 'max(8px, env(safe-area-inset-top))' }}
+      >
+        <div className="flex items-center gap-2" style={{ minWidth: 0 }}>
           <img
             src={process.env.PUBLIC_URL + '/scout-badge.png'}
             alt="Scout Badge"
-            className="mx-auto mb-3"
-            style={{ width: 'clamp(60px, 15vw, 100px)', height: 'clamp(60px, 15vw, 100px)' }}
+            style={{ width: 'clamp(32px, 8vw, 48px)', height: 'clamp(32px, 8vw, 48px)', flexShrink: 0 }}
           />
-          <h1 className="font-bold text-white mb-1" style={{ fontSize: 'clamp(24px, 6vw, 36px)' }}>Scout Sign-In</h1>
-          <p className="text-gray-300" style={{ fontSize: 'clamp(12px, 3vw, 16px)' }}>Professional attendance tracking</p>
-
-          {/* Show Instructions Button */}
-          <button
-            onClick={() => setShowInstructions(true)}
-            className="mt-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-            style={{ padding: 'clamp(6px, 2vw, 12px) clamp(12px, 3vw, 20px)', fontSize: 'clamp(12px, 3vw, 14px)' }}
-          >
-            📋 Show Instructions
-          </button>
+          <div style={{ minWidth: 0 }}>
+            <h1 className="font-bold text-white leading-tight" style={{ fontSize: 'clamp(16px, 4.5vw, 24px)', color: '#fff' }}>Scout Sign-In</h1>
+            <p className="leading-tight" style={{ fontSize: 'clamp(10px, 2.5vw, 13px)', color: '#d1d5db' }}>Professional attendance tracking</p>
+          </div>
         </div>
+        <button
+          onClick={() => setShowInstructions(true)}
+          className="rounded-lg font-semibold"
+          style={{ backgroundColor: '#2563eb', color: '#fff', padding: '6px 10px', fontSize: 'clamp(12px, 3vw, 14px)', whiteSpace: 'nowrap', flexShrink: 0 }}
+        >
+          📋 <span className="hidden sm:inline">Instructions</span>
+        </button>
+      </div>
 
-        {/* Messages for everyone - shown at the top of the Sign-In tab */}
-        {screen === 'signin' && (
-          <EveryoneAnnouncements announcements={data.announcements} />
-        )}
-
+      {/* Main Content - fills the space between header and tabs, scrolls only if needed */}
+      <div
+        className="px-2 md:px-4"
+        style={{ flex: '1 1 auto', minHeight: 0, overflowY: 'auto', overflowX: 'hidden', position: 'relative', zIndex: 1, WebkitOverflowScrolling: 'touch' }}
+      >
+        <div className="mx-auto" style={{ maxWidth: '900px', width: '100%' }}>
         {/* Screen Content - Master List shows its lock card in the page until unlocked (same as Setup) */}
         {screen === 'masterlist' && !masterListUnlocked ? (
           <div className="flex justify-center mt-8 px-2" style={{ position: 'relative', zIndex: 10 }}>
@@ -273,18 +255,17 @@ const ScoutSignIn = () => {
             />
           )
         )}
+        </div>
       </div>
 
-      {/* Navigation - Fixed at bottom, always visible */}
+      {/* Navigation - always at the bottom, never covers the page */}
       <div
-        className="fixed left-0 right-0 flex gap-1 justify-center flex-wrap px-2"
+        className="flex gap-1 justify-center px-2 pt-2"
         style={{
-          bottom: 'max(8px, env(safe-area-inset-bottom, 8px))',
-          transform: 'translateX(-50%)',
-          left: '50%',
-          zIndex: 10002,
-          pointerEvents: 'auto',
-          maxWidth: '95vw',
+          flexShrink: 0,
+          position: 'relative',
+          zIndex: 10,
+          paddingBottom: 'max(8px, env(safe-area-inset-bottom))',
           width: '100%'
         }}
       >

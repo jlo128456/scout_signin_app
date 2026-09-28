@@ -1,80 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PhoneInputSection from '../components/PhoneInputSection-Compact';
 import { Plus, AlertCircle } from 'lucide-react';
-
-const DisplayAnnouncementsForChild = ({ announcements, currentChild }) => {
-  if (!announcements || announcements.length === 0) return null;
-  if (!currentChild) return null;
-
-  const getAnnouncementDate = (createdAt) => {
-    try {
-      const date = new Date(createdAt);
-      if (isNaN(date.getTime())) {
-        return 'Date not set';
-      }
-      return date.toLocaleString();
-    } catch (err) {
-      return 'Invalid date';
-    }
-  };
-
-  const relevantAnnouncements = announcements.filter(announcement => {
-    // Show to ALL children
-    if (announcement.type === 'all') {
-      return true;
-    }
-    if (announcement.type === 'individual') {
-      // Use string comparison for ID match (child ID may be number or string)
-      return String(announcement.targetChildId) === String(currentChild.id);
-    }
-    if (announcement.type === 'section') {
-      // Use string comparison for section (case-sensitive but handle type differences)
-      return String(announcement.targetSection) === String(currentChild.section);
-    }
-    return false;
-  });
-
-  if (relevantAnnouncements.length === 0) return null;
-
-  const getTypeColor = (type) => {
-    switch (type) {
-      case 'individual':
-        return 'bg-purple-50 border-l-4 border-purple-500';
-      default:
-        return 'bg-blue-50 border-l-4 border-blue-500';
-    }
-  };
-
-  const getTypeIcon = (type) => {
-    switch (type) {
-      case 'individual':
-        return '💜';
-      default:
-        return 'ℹ️';
-    }
-  };
-
-  return (
-    <div className="mb-6 space-y-3">
-      <h3 className="font-bold text-lg text-gray-700">📢 Message for {currentChild.name}</h3>
-      {relevantAnnouncements.map(announcement => (
-        <div
-          key={announcement.id}
-          className={`p-4 rounded-lg ${getTypeColor(announcement.type)}`}
-        >
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">{getTypeIcon(announcement.type)}</span>
-            <div className="flex-1">
-              <h4 className="font-bold text-gray-800">{announcement.title}</h4>
-              <p className="text-gray-700 text-sm whitespace-pre-wrap mt-1">{announcement.message}</p>
-              <p className="text-xs text-gray-500 mt-2">Posted: {getAnnouncementDate(announcement.createdAt)}</p>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
+import AnnouncementsManager from '../components/AnnouncementsManager';
 
 const SignInScreen = ({ data, setData, selectedChild }) => {
   const [phone, setPhone] = useState('');
@@ -190,155 +117,154 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
 
   const att = child ? data.attendance[child.id] : null;
   const isSignedIn = att?.signedIn;
-  const latestAnnouncement = (data.announcements || []).slice(-1)[0];
+  // Never pop up someone else's private message
+  const latestAnnouncement = (data.announcements || []).filter(a => a.type !== 'individual').slice(-1)[0];
 
   return (
-    <div className="bg-white p-3 md:p-6 space-y-3 md:space-y-6">
-      {/* Scout Logo Badge - Smaller on mobile/tablet */}
-      <div className="text-center mb-2 md:mb-6">
-        <span className="text-4xl md:text-6xl">⛺</span>
-        <h1 className="text-xl md:text-3xl font-bold text-green-600 mt-1 md:mt-2">Scout Sign-In</h1>
-      </div>
-      
-      {/* Section Info - Compact on mobile */}
-      <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-2 md:p-4 rounded-lg">
-        <p className="text-xs md:text-sm font-semibold">Active Section</p>
-        <h2 className="text-lg md:text-2xl font-bold">{currentSection}</h2>
+    <div className="signin-root">
+      <style>{`
+        .signin-root { height: 100%; display: flex; flex-direction: column; gap: 8px;
+          background: #fff; border-radius: 10px; padding: 8px; box-sizing: border-box; overflow: hidden; }
+        .signin-top { display: flex; gap: 8px; align-items: stretch; flex-shrink: 0; }
+        .signin-body { flex: 1 1 auto; min-height: 0; display: grid; gap: 8px;
+          grid-template-columns: 1fr; grid-template-rows: minmax(0, auto) minmax(0, 1fr); }
+        .signin-col { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .signin-msgs { max-height: 22vh; }
+        @media (min-width: 768px) {
+          .signin-body { grid-template-columns: 1fr 1fr; grid-template-rows: minmax(0, 1fr); }
+          .signin-msgs { max-height: none; }
+        }
+        @media (max-width: 767px) {
+          .signin-root { height: auto; min-height: 100%; overflow: visible; }
+          .signin-col { overflow: visible; }
+        }
+      `}</style>
+
+      {/* Top bar: section + leaders + counters */}
+      <div className="signin-top">
+        <div className="flex-1 rounded-lg px-3 py-2" style={{ background: "linear-gradient(to right, #a855f7, #9333ea)", color: "#fff", minWidth: 0 }}>
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <span className="text-xs font-semibold" style={{ color: "#fff", opacity: 0.85 }}>Active Section</span>
+            <span className="text-base md:text-lg font-bold" style={{ color: "#fff" }}>{currentSection}</span>
+          </div>
+          {onDutyLeaders.length > 0 && (
+            <p className="text-xs" style={{ color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              👥 {onDutyLeaders.map(l => `${l.name}${l.scoutName ? ` (${l.scoutName})` : ""}`).join(" · ")}
+            </p>
+          )}
+        </div>
+        <div className="text-center rounded-lg px-3 py-1" style={{ backgroundColor: "#f0fdf4" }}>
+          <div className="text-xl font-bold" style={{ color: "#16a34a" }}>{signedInCount}</div>
+          <p className="text-xs text-gray-600">signed in</p>
+        </div>
+        <div className="text-center rounded-lg px-3 py-1" style={{ backgroundColor: "#fef2f2" }}>
+          <div className="text-xl font-bold" style={{ color: "#dc2626" }}>{notHereCount}</div>
+          <p className="text-xs text-gray-600">not here</p>
+        </div>
       </div>
 
-      {/* Leaders on duty - Hide on small screens if possible, compact otherwise */}
-      {onDutyLeaders.length > 0 && (
-        <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-3 md:p-6 rounded-lg shadow-lg">
-          <h3 className="font-bold text-sm md:text-lg mb-2 md:mb-3">👥 Leaders on Duty</h3>
-          <div className="flex flex-wrap gap-2 md:gap-3">
-            {onDutyLeaders.map((leader, i) => (
-              <div
-                key={i}
-                className="bg-white bg-opacity-20 px-2 md:px-4 py-1 md:py-2 rounded-full text-white text-xs md:text-sm font-semibold"
-              >
-                {leader.name} ({leader.scoutName})
+      <div className="signin-body">
+        {/* Left (or top on phones): messages */}
+        <div className="signin-col signin-msgs">
+          {showMessage && latestAnnouncement && (
+            <div className="rounded-lg px-3 py-2" style={{ background: "linear-gradient(to right, #3b82f6, #2563eb)", color: "#fff" }}>
+              <p className="font-bold text-sm" style={{ color: "#fff" }}>📢 {latestAnnouncement.title}</p>
+              <p className="text-sm" style={{ color: "#fff" }}>{latestAnnouncement.message}</p>
+            </div>
+          )}
+          {/* All/Section/Group for everyone, Individual only once that child is found */}
+          <AnnouncementsManager data={data} mode="parent" child={child} />
+        </div>
+
+        {/* Right (or below on phones): find, add, sign in */}
+        <div className="signin-col">
+          {blockedWarning && (
+            <div className="rounded-lg px-3 py-2 border-2" style={{ backgroundColor: "#fef2f2", borderColor: "#ef4444" }}>
+              <div className="flex gap-2 items-start">
+                <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#dc2626" }} />
+                <div>
+                  <p className="font-bold text-sm" style={{ color: "#dc2626" }}>⛔ ACCESS DENIED</p>
+                  <p className="text-sm font-semibold" style={{ color: "#b91c1c" }}>{blockedWarning}</p>
+                  <p className="text-xs" style={{ color: "#dc2626" }}>Contact leadership.</p>
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Message shown after signing in */}
-      {showMessage && latestAnnouncement && (
-        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-3 md:p-6 rounded-lg shadow-lg">
-          <h3 className="font-bold text-sm md:text-lg mb-1 md:mb-2">📢 Important Message</h3>
-          <p className="text-white font-semibold text-sm md:text-base">{latestAnnouncement.title}</p>
-          <p className="text-white mt-1 md:mt-2 text-sm md:text-base">{latestAnnouncement.message}</p>
-        </div>
-      )}
-
-      {/* Blocked warning */}
-      {blockedWarning && (
-        <div className="bg-red-50 border-2 border-red-500 p-3 md:p-6 rounded-lg">
-          <div className="flex gap-2 md:gap-3 items-start">
-            <AlertCircle className="w-6 md:w-8 h-6 md:h-8 text-red-600 flex-shrink-0 mt-1" />
-            <div>
-              <h3 className="font-bold text-base md:text-lg text-red-600 mb-1 md:mb-2">⛔ ACCESS DENIED</h3>
-              <p className="text-red-700 font-semibold text-sm md:text-base">{blockedWarning}</p>
-              <p className="text-xs md:text-sm text-red-600 mt-1 md:mt-2">This parent has been blocked from signing in children. Contact leadership.</p>
             </div>
-          </div>
-        </div>
-      )}
+          )}
 
-      {/* Counters - Compact on mobile */}
-      <div className="flex justify-between items-center mb-2 md:mb-6 bg-gray-50 p-3 md:p-4 rounded-lg">
-        <div className="text-center">
-          <div className="text-2xl md:text-4xl font-bold text-green-600">{signedInCount}</div>
-          <p className="text-xs md:text-sm text-gray-600">signed in</p>
-        </div>
-        <div className="text-center">
-          <div className="text-2xl md:text-4xl font-bold text-red-600">{notHereCount}</div>
-          <p className="text-xs md:text-sm text-gray-600">not here</p>
-        </div>
-      </div>
-
-      {/* Phone lookup - PRIORITY SECTION */}
-      <div className="bg-blue-50 p-3 md:p-6 rounded-lg space-y-2 md:space-y-4 border-2 border-blue-300">
-        <h3 className="font-bold text-base md:text-lg">📱 Find Child by Phone</h3>
-        <PhoneInputSection 
-          phone={phone}
-          onPhoneChange={setPhone}
-          onFindChild={findChild}
-        />
-      </div>
-
-      {/* Quick Add Child */}
-      <div>
-        {!showAddChild ? (
-          <button
-            type="button"
-            onClick={() => setShowAddChild(true)}
-            className="w-full bg-purple-500 text-white py-2 md:py-3 rounded-lg font-bold hover:bg-purple-600 flex items-center justify-center gap-2 text-sm md:text-base"
-          >
-            <Plus className="w-4 md:w-5 h-4 md:h-5" />
-            Child Not Listed? Quick Add
-          </button>
-        ) : (
-          <div className="bg-purple-50 p-3 md:p-4 rounded-lg space-y-2">
-            <p className="text-xs md:text-sm text-gray-600 font-semibold mb-2">Add child to {currentSection}:</p>
-            <input
-              type="text"
-              placeholder="Child name"
-              value={newChildName}
-              onChange={(e) => setNewChildName(e.target.value)}
-              className="w-full px-2 md:px-3 py-1.5 md:py-2 text-sm border rounded mb-2 focus:outline-none focus:border-blue-500"
-            />
-            <input
-              type="tel"
-              placeholder="Parent phone"
-              value={newChildPhone}
-              onChange={(e) => setNewChildPhone(e.target.value)}
-              className="w-full px-2 md:px-3 py-1.5 md:py-2 text-sm border rounded mb-2 focus:outline-none focus:border-blue-500"
-            />
-            <div className="flex gap-2">
+          {/* Show child if found (goes to the top so Sign In is always visible) */}
+          {child && (
+            <div className="rounded-lg px-3 py-2 border-2" style={{ backgroundColor: isSignedIn ? "#f0fdf4" : "#f9fafb", borderColor: isSignedIn ? "#86efac" : "#d1d5db" }}>
+              <div className="flex items-baseline justify-between gap-2 flex-wrap">
+                <h4 className="font-bold text-lg">{child.name}</h4>
+                <span className="text-xs text-gray-500">{child.scoutName} · {child.memberNumber}</span>
+              </div>
+              <p className="text-xs mb-2" style={{ color: isSignedIn ? "#16a34a" : "#4b5563", fontWeight: isSignedIn ? 600 : 400 }}>
+                {isSignedIn ? `Signed in at ${att.signInTime}` : 'Not signed in yet'}
+              </p>
               <button
                 type="button"
-                onClick={addQuickChild}
-                className="flex-1 bg-green-500 text-white py-1.5 md:py-2 rounded font-semibold hover:bg-green-600 text-sm md:text-base"
+                onClick={toggleSignIn}
+                className="w-full py-2 rounded-lg font-bold text-base"
+                style={{ backgroundColor: isSignedIn ? "#ef4444" : "#22c55e", color: "#fff" }}
               >
-                Add & Sign In
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowAddChild(false)}
-                className="flex-1 bg-gray-300 text-black py-1.5 md:py-2 rounded font-semibold hover:bg-gray-400 text-sm md:text-base"
-              >
-                Cancel
+                {isSignedIn ? 'Sign Out' : 'Sign In'}
               </button>
             </div>
+          )}
+
+          {/* Phone lookup */}
+          <div className="rounded-lg p-2 border-2" style={{ backgroundColor: "#eff6ff", borderColor: "#93c5fd" }}>
+            <PhoneInputSection
+              phone={phone}
+              onPhoneChange={setPhone}
+              onFindChild={findChild}
+            />
           </div>
-        )}
-      </div>
 
-      {/* Show announcements for this child */}
-      {child && <DisplayAnnouncementsForChild announcements={data.announcements || []} currentChild={child} />}
-
-      {/* Show child if found */}
-      {child && (
-        <div className={`p-3 md:p-6 rounded-lg border-2 ${isSignedIn ? 'bg-green-50 border-green-300' : 'bg-gray-50 border-gray-300'}`}>
-          <h4 className="font-bold text-lg md:text-2xl mb-1 md:mb-2">{child.name}</h4>
-          <p className="text-xs md:text-sm text-gray-600 mb-1">{child.scoutName}</p>
-          <p className="text-xs text-gray-500 mb-2 md:mb-4">{child.memberNumber}</p>
-          <p className={`text-xs md:text-sm mb-2 md:mb-4 ${isSignedIn ? 'text-green-600 font-semibold' : 'text-gray-600'}`}>
-            {isSignedIn ? `Signed in at ${att.signInTime}` : 'Not signed in yet'}
-          </p>
-          <button
-            type="button"
-            onClick={toggleSignIn}
-            className={`w-full py-2 md:py-3 rounded-lg text-white font-bold text-base md:text-lg ${
-              isSignedIn ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
-            }`}
-          >
-            {isSignedIn ? 'Sign Out' : 'Sign In'}
-          </button>
+          {/* Quick Add Child */}
+          {!showAddChild ? (
+            <button
+              type="button"
+              onClick={() => setShowAddChild(true)}
+              className="w-full py-2 rounded-lg font-bold flex items-center justify-center gap-2 text-sm"
+              style={{ backgroundColor: "#a855f7", color: "#fff", flexShrink: 0 }}
+            >
+              <Plus className="w-4 h-4" />
+              Child Not Listed? Quick Add
+            </button>
+          ) : (
+            <div className="rounded-lg p-2 space-y-2" style={{ backgroundColor: "#faf5ff" }}>
+              <p className="text-xs text-gray-600 font-semibold">Add child to {currentSection}:</p>
+              <input
+                type="text"
+                placeholder="Child name"
+                value={newChildName}
+                onChange={(e) => setNewChildName(e.target.value)}
+                className="w-full px-2 py-1.5 text-sm border rounded focus:outline-none"
+              />
+              <input
+                type="tel"
+                placeholder="Parent phone"
+                value={newChildPhone}
+                onChange={(e) => setNewChildPhone(e.target.value)}
+                className="w-full px-2 py-1.5 text-sm border rounded focus:outline-none"
+              />
+              <div className="flex gap-2">
+                <button type="button" onClick={addQuickChild}
+                  className="flex-1 py-1.5 rounded font-semibold text-sm"
+                  style={{ backgroundColor: "#22c55e", color: "#fff" }}>
+                  Add & Sign In
+                </button>
+                <button type="button" onClick={() => setShowAddChild(false)}
+                  className="flex-1 py-1.5 rounded font-semibold text-sm"
+                  style={{ backgroundColor: "#d1d5db", color: "#000" }}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Guardian modal */}
       {showGuardianModal && (
