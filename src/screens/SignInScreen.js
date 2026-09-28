@@ -135,6 +135,9 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
           .signin-msgs { max-height: none; }
         }
         @media (max-width: 767px) {
+          .signin-top { flex-wrap: wrap; }
+          .signin-top > .signin-section { flex: 1 1 100% !important; }
+          .signin-top > .signin-count { flex: 1 1 0; }
           .signin-root { height: auto; min-height: 100%; overflow: visible; }
           .signin-col { overflow: visible; }
         }
@@ -142,22 +145,52 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
 
       {/* Top bar: section + leaders + counters */}
       <div className="signin-top">
-        <div className="flex-1 rounded-lg px-3 py-2" style={{ background: "linear-gradient(to right, #a855f7, #9333ea)", color: "#fff", minWidth: 0 }}>
-          <div className="flex items-baseline gap-2 flex-wrap">
-            <span className="text-xs font-semibold" style={{ color: "#fff", opacity: 0.85 }}>Active Section</span>
-            <span className="text-base md:text-lg font-bold" style={{ color: "#fff" }}>{currentSection}</span>
+        <div
+          className="signin-section"
+          style={{
+            flex: 1, minWidth: 0, borderRadius: 10, padding: "8px 14px",
+            background: "linear-gradient(to right, #a855f7, #9333ea)", color: "#fff",
+            display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap"
+          }}
+        >
+          {/* Section name */}
+          <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.15, flexShrink: 0 }}>
+            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(255,255,255,0.8)" }}>
+              Active Section
+            </span>
+            <span style={{ fontSize: 20, fontWeight: 800, color: "#fff" }}>{currentSection}</span>
           </div>
+
+          {/* Leaders on duty */}
           {onDutyLeaders.length > 0 && (
-            <p className="text-xs" style={{ color: "#fff", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-              👥 {onDutyLeaders.map(l => `${l.name}${l.scoutName ? ` (${l.scoutName})` : ""}`).join(" · ")}
-            </p>
+            <>
+              <div style={{ width: 1, alignSelf: "stretch", backgroundColor: "rgba(255,255,255,0.35)" }} />
+              <div style={{ display: "flex", flexDirection: "column", gap: 3, minWidth: 0, flex: 1 }}>
+                <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(255,255,255,0.8)" }}>
+                  👥 Leaders on Duty
+                </span>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {onDutyLeaders.map((l, i) => (
+                    <span
+                      key={i}
+                      style={{
+                        fontSize: 12, fontWeight: 600, color: "#fff", whiteSpace: "nowrap",
+                        backgroundColor: "rgba(255,255,255,0.2)", borderRadius: 999, padding: "2px 10px"
+                      }}
+                    >
+                      {l.name}{l.scoutName ? ` · ${l.scoutName}` : ""}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </>
           )}
         </div>
-        <div className="text-center rounded-lg px-3 py-1" style={{ backgroundColor: "#f0fdf4" }}>
+        <div className="signin-count text-center rounded-lg px-3 py-1" style={{ backgroundColor: "#f0fdf4" }}>
           <div className="text-xl font-bold" style={{ color: "#16a34a" }}>{signedInCount}</div>
           <p className="text-xs text-gray-600">signed in</p>
         </div>
-        <div className="text-center rounded-lg px-3 py-1" style={{ backgroundColor: "#fef2f2" }}>
+        <div className="signin-count text-center rounded-lg px-3 py-1" style={{ backgroundColor: "#fef2f2" }}>
           <div className="text-xl font-bold" style={{ color: "#dc2626" }}>{notHereCount}</div>
           <p className="text-xs text-gray-600">not here</p>
         </div>
