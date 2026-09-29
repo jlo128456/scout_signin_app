@@ -3,6 +3,30 @@ import PhoneInputSection from '../components/PhoneInputSection-Compact';
 import { Plus, AlertCircle } from 'lucide-react';
 import AnnouncementsManager from '../components/AnnouncementsManager';
 
+// Section names can be stored differently ('Cubs' vs 'Cub Scouts'),
+// so compare them loosely instead of with ===.
+const SECTION_ALIASES = {
+  'joeys': 'joey scouts',
+  'joey scouts': 'joey scouts',
+  'cubs': 'cub scouts',
+  'cub scouts': 'cub scouts',
+  'scouts': 'scouts',
+  'venturers': 'venturer scouts',
+  'venturer scouts': 'venturer scouts',
+  'rovers': 'rover scouts',
+  'rover scouts': 'rover scouts',
+};
+
+const normSection = (s) => {
+  const key = (s || '').trim().toLowerCase();
+  return SECTION_ALIASES[key] || key;
+};
+
+const sameSection = (a, b) => normSection(a) === normSection(b);
+
+// onDuty may be saved as true, 'true', or missing on older records
+const isOnDuty = (l) => l.onDuty === true || l.onDuty === 'true';
+
 const SignInScreen = ({ data, setData, selectedChild }) => {
   const [phone, setPhone] = useState('');
   const [child, setChild] = useState(null);
@@ -22,10 +46,11 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
   }, [selectedChild]);
 
   const currentSection = data.currentSection || 'Joeys';
-  const signedInCount = Object.values(data.attendance || {}).filter(a => a.signedIn).length;
-  const notHereCount = (data.children || []).filter(c => c.section === currentSection).length;
-  const onDutyLeaders = (data.leaders || []).filter(l => l.onDuty && l.section === currentSection);
-  const childrenForSection = (data.children || []).filter(c => c.section === currentSection);
+  const attendance = data.attendance || {};
+  const childrenForSection = (data.children || []).filter(c => sameSection(c.section, currentSection));
+  const signedInCount = childrenForSection.filter(c => attendance[c.id]?.signedIn).length;
+  const notHereCount = childrenForSection.length - signedInCount;
+  const onDutyLeaders = (data.leaders || []).filter(l => isOnDuty(l) && sameSection(l.section, currentSection));
   const blockedParents = data.blockedParents || [];
 
   const isPhoneBlocked = (phoneNum) => {
@@ -66,6 +91,7 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
       section: currentSection,
       scoutName: 'Scout',
       memberNumber: `SQA${Date.now().toString().slice(-4)}`,
+      guardians: [],
     };
     setData({ ...data, children: [...(data.children || []), newChild] });
     setChild(newChild);
@@ -77,16 +103,16 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
 
   const toggleSignIn = () => {
     if (!child) return;
-    const att = data.attendance[child.id] || { signedIn: false };
-    
+    const att = attendance[child.id] || { signedIn: false };
+
     if (!att.signedIn) {
       const newAtt = { ...att, signedIn: true, signInTime: new Date().toLocaleTimeString() };
-      const newData = { ...data, attendance: { ...data.attendance, [child.id]: newAtt } };
+      const newData = { ...data, attendance: { ...attendance, [child.id]: newAtt } };
       setData(newData);
-      
+
       setShowMessage(true);
       setTimeout(() => setShowMessage(false), 5000);
-      
+
       alert(`${child.name} signed in!`);
       setChild(null);
       setPhone('');
@@ -100,13 +126,13 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
       alert('Please select a guardian');
       return;
     }
-    const newAtt = { 
-      ...data.attendance[child.id], 
-      signedIn: false, 
+    const newAtt = {
+      ...attendance[child.id],
+      signedIn: false,
       signOutGuardian: selectedGuardian,
-      signOutTime: new Date().toLocaleTimeString() 
+      signOutTime: new Date().toLocaleTimeString()
     };
-    const newData = { ...data, attendance: { ...data.attendance, [child.id]: newAtt } };
+    const newData = { ...data, attendance: { ...attendance, [child.id]: newAtt } };
     setData(newData);
     alert(`${child.name} signed out by ${selectedGuardian}`);
     setShowGuardianModal(false);
@@ -115,7 +141,7 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
     setPhone('');
   };
 
-  const att = child ? data.attendance[child.id] : null;
+  const att = child ? attendance[child.id] : null;
   const isSignedIn = att?.signedIn;
   // Never pop up someone else's private message
   const latestAnnouncement = (data.announcements || []).filter(a => a.type !== 'individual').slice(-1)[0];
@@ -161,30 +187,32 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
             <span style={{ fontSize: 20, fontWeight: 800, color: "#fff" }}>{currentSection}</span>
           </div>
 
-          {/* Leaders on duty */}
-          {onDutyLeaders.length > 0 && (
-            <>
-              <div style={{ width: 1, alignSelf: "stretch", backgroundColor: "rgba(255,255,255,0.35)" }} />
-              <div style={{ display: "flex", flexDirection: "column", gap: 3, minWidth: 0, flex: 1 }}>
-                <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(255,255,255,0.8)" }}>
-                  👥 Leaders on Duty
-                </span>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {onDutyLeaders.map((l, i) => (
-                    <span
-                      key={i}
-                      style={{
-                        fontSize: 12, fontWeight: 600, color: "#fff", whiteSpace: "nowrap",
-                        backgroundColor: "rgba(255,255,255,0.2)", borderRadius: 999, padding: "2px 10px"
-                      }}
-                    >
-                      {l.name}{l.scoutName ? ` · ${l.scoutName}` : ""}
-                    </span>
-                  ))}
-                </div>
+          {/* Leaders on duty (always shown so an empty roster is obvious) */}
+          <div style={{ width: 1, alignSelf: "stretch", backgroundColor: "rgba(255,255,255,0.35)" }} />
+          <div style={{ display: "flex", flexDirection: "column", gap: 3, minWidth: 0, flex: 1 }}>
+            <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(255,255,255,0.8)" }}>
+              👥 Leaders on Duty
+            </span>
+            {onDutyLeaders.length > 0 ? (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {onDutyLeaders.map((l) => (
+                  <span
+                    key={l.id ?? l.name}
+                    style={{
+                      fontSize: 12, fontWeight: 600, color: "#fff", whiteSpace: "nowrap",
+                      backgroundColor: "rgba(255,255,255,0.2)", borderRadius: 999, padding: "2px 10px"
+                    }}
+                  >
+                    {l.name}{l.scoutName ? ` · ${l.scoutName}` : ""}
+                  </span>
+                ))}
               </div>
-            </>
-          )}
+            ) : (
+              <span style={{ fontSize: 12, color: "rgba(255,255,255,0.85)", fontStyle: "italic" }}>
+                None on duty — set in Roster
+              </span>
+            )}
+          </div>
         </div>
         <div className="signin-count text-center rounded-lg px-3 py-1" style={{ backgroundColor: "#f0fdf4" }}>
           <div className="text-xl font-bold" style={{ color: "#16a34a" }}>{signedInCount}</div>
@@ -305,7 +333,10 @@ const SignInScreen = ({ data, setData, selectedChild }) => {
           <div className="bg-white p-4 md:p-6 rounded-lg shadow-lg w-full max-w-96">
             <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4">Choose Guardian</h3>
             <div className="space-y-2 mb-3 md:mb-4 max-h-48 overflow-y-auto">
-              {child.guardians.map((guardian, i) => (
+              {(child.guardians || []).length === 0 && (
+                <p className="text-sm text-gray-500">No guardians on file for this child.</p>
+              )}
+              {(child.guardians || []).map((guardian, i) => (
                 <button
                   key={i}
                   type="button"
